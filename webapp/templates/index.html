@@ -7,32 +7,44 @@
     <body>
 
         <h1>Laser Pointer</h1>
+        {{ _log.msg }}
         <hr>
 
         <div style="padding-left:12px;">
             <h3>Control</h3>
                 <p>
-                    <a href="{{ url_for('control', data=2) }}"><input type="button" value="Start Calibration"></a>
+                    <a href="{{ url_for('control', data=2) }}">
+                        <input type="button" value="Start Calibration">
+                    </a>
                     <br><br>
-                    <a href="{{ url_for('control', data=1) }}"><input type="button" value="Laser On"></a>
-                    <a href="{{ url_for('control', data=0) }}"><input type="button" value="Laser Off"></a>
+                    <a href="{{ url_for('control', data=1) }}">
+                        <input type="button" value="Laser On">
+                    </a>
+                    <a href="{{ url_for('control', data=0) }}">
+                        <input type="button" value="Laser Off">
+                    </a>
                 </p>
             <h3>Move</h3>
                 <p>
-                    Laser 1: 
-                    <input type="number" min="0" max="350" value="0">
-                    <input type="number" min="0" max="350" value="0">
-                    <button type="submit">Move</button>
-                    <br>
-                    Laser 2: 
-                    <input type="number" min="0" max="350" value="0">
-                    <input type="number" min="0" max="350" value="0">
-                    <button type="submit">Move</button>
-                    <br>
-                    Laser 3: 
-                    <input type="number" min="0" max="350" value="0">
-                    <input type="number" min="0" max="350" value="0">
-                    <button type="submit">Move</button>
+                    <a href="{{ url_for('random') }}">
+                        <input type="button" value="Random">
+                    </a>
+                    <br><br>
+                    <form action = "/move" method = "POST">
+                        Laser 1: 
+                        <input type="number" name="numberBoxX1" id="numberBoxX1" min="0" max="350"/>
+                        <input type="number" name="numberBoxY1" id="numberBoxY1" min="0" max="350"/>
+                        <br>
+                        Laser 2:
+                        <input type="number" name="numberBoxX2" id="numberBoxX2" min="0" max="350"/>
+                        <input type="number" name="numberBoxY2" id="numberBoxY2" min="0" max="350"/>
+                        <br>
+                        Laser 3:
+                        <input type="number" name="numberBoxX3" id="numberBoxX3" min="0" max="350"/>
+                        <input type="number" name="numberBoxY3" id="numberBoxY3" min="0" max="350"/>
+                        <br>
+                        <input type="submit" value="submit"/>
+                    </form>
                 </p>
             <h3>Record</h3>
                 <p>
@@ -40,4 +52,15 @@
                 </p>
         </div>
     </body>
+    <script type="text/javascript">
+        document.getElementById("numberBoxX1").setAttribute('value', {{_coord.x1}});
+        document.getElementById("numberBoxX2").setAttribute('value', {{_coord.x2}});
+        document.getElementById("numberBoxX3").setAttribute('value', {{_coord.x3}});
+        document.getElementById("numberBoxY1").setAttribute('value', {{_coord.y1}});
+        document.getElementById("numberBoxY2").setAttribute('value', {{_coord.y2}});
+        document.getElementById("numberBoxY3").setAttribute('value', {{_coord.y3}});
+        if (_error) {
+            alert("[Err] Check connection of devices");
+        }
+    </script>
 </html>
