@@ -1,43 +1,51 @@
 from flask import Flask, flash, request, render_template, url_for, redirect, Markup
 from flask.helpers import send_from_directory
 import smbus
-import os
+import os, glob
+from pathlib import Path
 from random import *
 
 app = Flask(__name__)
 
-RESOURCE_PATH = '/resources/'
+RESOURCE_PATH = os.path.expanduser('~pi') + '/rotom/webapp/resources/'
+RESOURCE_EXTENSION = 'csv'
 ADDR = [int(0x41), int(0x42), int(0x43)]
 
-log = {'msg':''}
+log = {'msg':'Page is loaded.'}
 i2c = smbus.SMBus(1)
 tx = []
 coord = {
-    'x1':0, 'y1':0,
-    'x2':0, 'y2':0,
-    'x3':0, 'y3':0
+    'movex1':0, 'movey1':0,
+    'movex2':0, 'movey2':0,
+    'movex3':0, 'movey3':0,
+    'offsetx1':0, 'offsety1':0,
+    'offsetx2':0, 'offsety2':0,
+    'offsetx3':0, 'offsety3':0
 }
 error = 0
 
+filepaths = glob.glob(RESOURCE_PATH+'*.csv')
 filenames = []
+records = []
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
     return render_template('index.html', \
         _log=log, \
         _coord=coord, \
         _error=error, \
-        _filename=getFilenames() \
+        _filenames=getFilenames(), \
+        _records=records \
         )
 
 @app.route('/random')
 def random():
-    coord['x1'] = randint(1, 350)
-    coord['y1'] = randint(1, 350)
-    coord['x2'] = randint(1, 350)
-    coord['y2'] = randint(1, 350)
-    coord['x3'] = randint(1, 350)
-    coord['y3'] = randint(1, 350)
+    coord['movex1'] = randint(0, 3500)
+    coord['movey1'] = randint(0, 3500)
+    coord['movex2'] = randint(0, 3500)
+    coord['movey2'] = randint(0, 3500)
+    coord['movex3'] = randint(0, 3500)
+    coord['movey3'] = randint(0, 3500)
     return redirect(url_for('index'))
 
 @app.route('/control/<int:data>')
@@ -65,37 +73,37 @@ def control(data):
 def move():
     error = 0
     if request.method == 'POST':
-        coord['x1'] = request.form['numberBoxX1']
-        coord['y1'] = request.form['numberBoxY1']
+        coord['movex1'] = float(request.form['moveX1'])*10
+        coord['movey1'] = float(request.form['moveY1'])*10
         tx.clear()
-        tx.append(int(coord['x1'])>>8 & 0xff)
-        tx.append(int(coord['x1']) & 0xff)
-        tx.append(int(coord['y1'])>>8 & 0xff)
-        tx.append(int(coord['y1']) & 0xff)
+        tx.append(int(coord['movex1'])>>8 & 0xff)
+        tx.append(int(coord['movex1']) & 0xff)
+        tx.append(int(coord['movey1'])>>8 & 0xff)
+        tx.append(int(coord['movey1']) & 0xff)
         try:
             i2c.write_i2c_block_data(ADDR[0], 0x01, tx)
         except:
             error = 1
 
-        coord['x2'] = request.form['numberBoxX2']
-        coord['y2'] = request.form['numberBoxY2']
+        coord['movex2'] = float(request.form['moveX2'])*10
+        coord['movey2'] = float(request.form['moveY2'])*10
         tx.clear()
-        tx.append(int(coord['x1'])>>8 & 0xff)
-        tx.append(int(coord['x1']) & 0xff)
-        tx.append(int(coord['y1'])>>8 & 0xff)
-        tx.append(int(coord['y1']) & 0xff)
+        tx.append(int(coord['movex2'])>>8 & 0xff)
+        tx.append(int(coord['movex2']) & 0xff)
+        tx.append(int(coord['movey2'])>>8 & 0xff)
+        tx.append(int(coord['movey2']) & 0xff)
         try:
             i2c.write_i2c_block_data(ADDR[1], 0x01, tx)
         except:
             error = 1
 
-        coord['x3'] = request.form['numberBoxX3']
-        coord['y3'] = request.form['numberBoxY3']
+        coord['movex3'] = float(request.form['moveX3'])*10
+        coord['movey3'] = float(request.form['moveY3'])*10
         tx.clear()
-        tx.append(int(coord['x1'])>>8 & 0xff)
-        tx.append(int(coord['x1']) & 0xff)
-        tx.append(int(coord['y1'])>>8 & 0xff)
-        tx.append(int(coord['y1']) & 0xff)
+        tx.append(int(coord['movex3'])>>8 & 0xff)
+        tx.append(int(coord['movex3']) & 0xff)
+        tx.append(int(coord['movey3'])>>8 & 0xff)
+        tx.append(int(coord['movey3']) & 0xff)
         try:
             i2c.write_i2c_block_data(ADDR[2], 0x01, tx)
         except:
@@ -104,7 +112,73 @@ def move():
         updateLog(1, 0)
         return redirect(url_for('index'))
 
+@app.route('/offset', methods = ['POST'])
+def offset():
+    error = 0
+    if request.method == 'POST':
+        coord['offsetx1'] = float(request.form['offsetX1'])*10
+        coord['offsety1'] = float(request.form['offsetY1'])*10
+        tx.clear()
+        tx.append(int(coord['offsetx1'])>>8 & 0xff)
+        tx.append(int(coord['offsetx1']) & 0xff)
+        tx.append(int(coord['offsety1'])>>8 & 0xff)
+        tx.append(int(coord['offsety1']) & 0xff)
+        try:
+            i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
+        except:
+            error = 1
+
+        coord['offsetx2'] = float(request.form['offsetX2'])*10
+        coord['offsety2'] = float(request.form['offsetY2'])*10
+        tx.clear()
+        tx.append(int(coord['offsetx2'])>>8 & 0xff)
+        tx.append(int(coord['offsetx2']) & 0xff)
+        tx.append(int(coord['offsety2'])>>8 & 0xff)
+        tx.append(int(coord['offsety2']) & 0xff)
+        try:
+            i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
+        except:
+            error = 1
+
+        coord['offsetx3'] = float(request.form['offsetX3'])*10
+        coord['offsety3'] = float(request.form['offsetY3'])*10
+        tx.clear()
+        tx.append(int(coord['offsetx3'])>>8 & 0xff)
+        tx.append(int(coord['offsetx3']) & 0xff)
+        tx.append(int(coord['offsety3'])>>8 & 0xff)
+        tx.append(int(coord['offsety3']) & 0xff)
+        try:
+            i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
+        except:
+            error = 1
+
+        updateLog(2, 0)
+        return redirect(url_for('index'))
+
+@app.route('/readfile', methods = ['POST'])
+def readfile():
+    if request.method == 'POST':
+        selected = request.form['filenames']
+        filename = RESOURCE_PATH+selected[2:4]+selected[5:7]+selected[8:10]+selected[11:13]+selected[14:16]+'.csv'
+        f = open(filename, 'r')
+        lines = f.readlines()
+
+        records.clear()
+        for line in lines:
+            records.append(line.split(','))
+        print(records)
+        return redirect(url_for('index'))
+
+@app.route('/update', methods = ['POST'])
+def update():
+    return redirect(url_for('index'))
+
 def getFilenames():
+    filepaths = glob.glob(RESOURCE_PATH+'*.csv')
+    filenames.clear()
+    for path in filepaths:
+        name = os.path.basename(path)
+        filenames.append('20'+name[0:2]+'-'+name[2:4]+'-'+name[4:6]+' '+name[6:8]+':'+name[8:10])
     return filenames
 
 def Log(msg):
@@ -121,12 +195,21 @@ def updateLog(reg, data):
     elif reg is 1:
         if data is 0:
             Log('Coordinates are updated.' \
-                + ' (' + coord['x1'] + ', ' + coord['y1'] + ')' \
-                + ' (' + coord['x2'] + ', ' + coord['y2'] + ')' \
-                + ' (' + coord['x2'] + ', ' + coord['y3'] + ')' \
+                + ' (' + str(coord['movex1']/10) + ', ' + str(coord['movey1']/10) + ')' \
+                + ' (' + str(coord['movex2']/10) + ', ' + str(coord['movey2']/10) + ')' \
+                + ' (' + str(coord['movex3']/10) + ', ' + str(coord['movey3']/10) + ')' \
                     )
         elif data is 1:
             Log('An error has occurred during update coordinates.')
+    elif reg is 2:
+        if data is 0:
+            Log('Offset data are applied.' \
+                + ' (' + str(coord['offsetx1']/10) + ', ' + str(coord['offsety1']/10) + ')' \
+                + ' (' + str(coord['offsetx2']/10) + ', ' + str(coord['offsety2']/10) + ')' \
+                + ' (' + str(coord['offsetx3']/10) + ', ' + str(coord['offsety3']/10) + ')' \
+                    )
+        elif data is 1:
+            Log('An error has occurred during setup offsets.')
 
 if __name__ == '__main__':
     app.run(debug=True, port=80, host='0.0.0.0')

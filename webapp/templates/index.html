@@ -1,66 +1,125 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Laser Pointer</title>
-        <meta name="viewport" content="width=device-width initial-scale=1">
-    </head>
-    <body>
 
-        <h1>Laser Pointer</h1>
-        {{ _log.msg }}
-        <hr>
+<head>
+    <title>Laser Pointer</title>
+    <meta name="viewport" content="width=device-width initial-scale=1">
+</head>
 
-        <div style="padding-left:12px;">
-            <h3>Control</h3>
-                <p>
-                    <a href="{{ url_for('control', data=2) }}">
-                        <input type="button" value="Start Calibration">
-                    </a>
-                    <br><br>
-                    <a href="{{ url_for('control', data=1) }}">
-                        <input type="button" value="Laser On">
-                    </a>
-                    <a href="{{ url_for('control', data=0) }}">
-                        <input type="button" value="Laser Off">
-                    </a>
-                </p>
-            <h3>Move</h3>
-                <p>
-                    <a href="{{ url_for('random') }}">
-                        <input type="button" value="Random">
-                    </a>
-                    <br><br>
-                    <form action = "/move" method = "POST">
-                        Laser 1: 
-                        <input type="number" name="numberBoxX1" id="numberBoxX1" min="0" max="350"/>
-                        <input type="number" name="numberBoxY1" id="numberBoxY1" min="0" max="350"/>
-                        <br>
-                        Laser 2:
-                        <input type="number" name="numberBoxX2" id="numberBoxX2" min="0" max="350"/>
-                        <input type="number" name="numberBoxY2" id="numberBoxY2" min="0" max="350"/>
-                        <br>
-                        Laser 3:
-                        <input type="number" name="numberBoxX3" id="numberBoxX3" min="0" max="350"/>
-                        <input type="number" name="numberBoxY3" id="numberBoxY3" min="0" max="350"/>
-                        <br>
-                        <input type="submit" value="submit"/>
-                    </form>
-                </p>
-            <h3>Record</h3>
-                <p>
-                    
-                </p>
-        </div>
-    </body>
-    <script type="text/javascript">
-        document.getElementById("numberBoxX1").setAttribute('value', {{_coord.x1}});
-        document.getElementById("numberBoxX2").setAttribute('value', {{_coord.x2}});
-        document.getElementById("numberBoxX3").setAttribute('value', {{_coord.x3}});
-        document.getElementById("numberBoxY1").setAttribute('value', {{_coord.y1}});
-        document.getElementById("numberBoxY2").setAttribute('value', {{_coord.y2}});
-        document.getElementById("numberBoxY3").setAttribute('value', {{_coord.y3}});
-        if (_error) {
-            alert("[Err] Check connection of devices");
-        }
-    </script>
+<body>
+
+    <h1>Laser Pointer</h1>
+    {{ _log.msg }}
+    <hr>
+
+    <div style="padding-left:12px;">
+        <h3>Control</h3>
+        <p>
+            <a href="{{ url_for('control', data=2) }}">
+                <input type="button" value="Start Calibration">
+            </a>
+            <br><br>
+            <a href="{{ url_for('control', data=1) }}">
+                <input type="button" value="Laser On">
+            </a>
+            <a href="{{ url_for('control', data=0) }}">
+                <input type="button" value="Laser Off">
+            </a>
+        </p>
+        <h3>Move</h3>
+        <p>
+            <a href="{{ url_for('random') }}">
+                <input type="button" value="Random">
+            </a>
+            <br>
+            <form action="/move" method="POST">
+                Laser 1:
+                <input type="number" name="moveX1" id="moveX1" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveY1" id="moveY1" min="0" max="350" step="0.1"/>
+                <br>
+                Laser 2:
+                <input type="number" name="moveX2" id="moveX2" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveY2" id="moveY2" min="0" max="350" step="0.1"/>
+                <br>
+                Laser 3:
+                <input type="number" name="moveX3" id="moveX3" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveY3" id="moveY3" min="0" max="350" step="0.1"/>
+                <br>
+                <input type="submit" value="Apply" />
+            </form>
+        </p>
+        <h3>Offset</h3>
+        <p>
+            <form action="/offset" method="POST">
+                Laser 1:
+                <input type="number" name="offsetX1" id="offsetX1" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetY1" id="offsetY1" min="-175" max="175" step="0.1"/>
+                <br>
+                Laser 2:
+                <input type="number" name="offsetX2" id="offsetX2" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetY2" id="offsetY2" min="-175" max="175" step="0.1"/>
+                <br>
+                Laser 3:
+                <input type="number" name="offsetX3" id="offsetX3" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetY3" id="offsetY3" min="-175" max="175" step="0.1"/>
+                <br>
+                <input type="submit" value="Apply" />
+            </form>
+        </p>
+        <h3>Record</h3>
+        <p>
+            <form action="/readfile" method="POST">
+                <select name="filenames">
+                    {% for filename in _filenames %}
+                    <option value="{{filename}}" SELECTED>{{filename}}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Load"/>
+            </form>
+        </p>
+        <p>
+            <table style="width: 350px; text-align: center;" >
+                <tr>
+                    <th>No.</th>
+                    <th>X1</th>
+                    <th>Y1</th>
+                    <th>X2</th>
+                    <th>Y2</th>
+                    <th>X3</th>
+                    <th>Y3</th>
+                </tr>
+                {% for record in _records %}
+                <tr class='clickable-row' data-href="{{ url_for('update') }}" method='POST'>
+                    <td>{{ record[0] }}</td>
+                    <td>{{ record[1] }}</td>
+                    <td>{{ record[2] }}</td>
+                    <td>{{ record[3] }}</td>
+                    <td>{{ record[4] }}</td>
+                    <td>{{ record[5] }}</td>
+                    <td>{{ record[6] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </p>
+    </div>
+</body>
+<script type="text/javascript">
+    document.getElementById("moveX1").setAttribute('value', {{ _coord.movex1/10 }});
+    document.getElementById("moveX2").setAttribute('value', {{ _coord.movex2/10 }});
+    document.getElementById("moveX3").setAttribute('value', {{ _coord.movex3/10 }});
+    document.getElementById("moveY1").setAttribute('value', {{ _coord.movey1/10 }});
+    document.getElementById("moveY2").setAttribute('value', {{ _coord.movey2/10 }});
+    document.getElementById("moveY3").setAttribute('value', {{ _coord.movey3/10 }});
+
+    document.getElementById("offsetX1").setAttribute('value', {{ _coord.offsetx1/10 }});
+    document.getElementById("offsetX2").setAttribute('value', {{ _coord.offsetx2/10 }});
+    document.getElementById("offsetX3").setAttribute('value', {{ _coord.offsetx3/10 }});
+    document.getElementById("offsetY1").setAttribute('value', {{ _coord.offsety1/10 }});
+    document.getElementById("offsetY2").setAttribute('value', {{ _coord.offsety2/10 }});
+    document.getElementById("offsetY3").setAttribute('value', {{ _coord.offsety3/10 }});
+    if (_error) {
+        alert("[Err] Check connection of devices");
+    }
+</script>
+
 </html>
