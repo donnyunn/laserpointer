@@ -26,16 +26,18 @@ error = 0
 
 filepaths = glob.glob(RESOURCE_PATH+'*.csv')
 filenames = []
-records = []
+records = {}
+fileusing = []
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def index():
     return render_template('index.html', \
         _log=log, \
         _coord=coord, \
         _error=error, \
         _filenames=getFilenames(), \
-        _records=records \
+        _records=records, \
+        _fileusing=fileusing \
         )
 
 @app.route('/random')
@@ -158,19 +160,29 @@ def offset():
 @app.route('/readfile', methods = ['POST'])
 def readfile():
     if request.method == 'POST':
-        selected = request.form['filenames']
-        filename = RESOURCE_PATH+selected[2:4]+selected[5:7]+selected[8:10]+selected[11:13]+selected[14:16]+'.csv'
-        f = open(filename, 'r')
+        filename = request.form['filenames']
+        filepath = RESOURCE_PATH+filename[2:4]+filename[5:7]+filename[8:10]+filename[11:13]+filename[14:16]+'.csv'
+        f = open(filepath, 'r')
         lines = f.readlines()
 
         records.clear()
         for line in lines:
-            records.append(line.split(','))
-        print(records)
-        return redirect(url_for('index'))
+            key = line.split(',')[0]
+            records[key] = []
+            records[key].append(line.split(',')[1:7])
 
-@app.route('/update', methods = ['POST'])
-def update():
+    fileusing.clear()
+    fileusing.append(filename)
+    return redirect(url_for('index'))
+
+@app.route('/update/<key>')
+def update(key):
+    coord['movex1'] = int(float(records[str(key)][0][0])*10)
+    coord['movey1'] = int(float(records[str(key)][0][1])*10)
+    coord['movex2'] = int(float(records[str(key)][0][2])*10)
+    coord['movey2'] = int(float(records[str(key)][0][3])*10)
+    coord['movex3'] = int(float(records[str(key)][0][4])*10)
+    coord['movey3'] = int(float(records[str(key)][0][5])*10)
     return redirect(url_for('index'))
 
 def getFilenames():

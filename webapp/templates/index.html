@@ -71,15 +71,16 @@
             <form action="/readfile" method="POST">
                 <select name="filenames">
                     {% for filename in _filenames %}
-                    <option value="{{filename}}" SELECTED>{{filename}}</option>
+                    <option value="{{filename}}" {% if _fileusing[0]==filename %}SELECTED{% endif %}>{{filename}}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" value="Load"/>
             </form>
         </p>
         <p>
-            <table style="width: 350px; text-align: center;" >
-                <tr>
+            <table style="width: 380px; text-align: center; " >
+                <thead><tr>
+                    <th></th>
                     <th>No.</th>
                     <th>X1</th>
                     <th>Y1</th>
@@ -87,18 +88,25 @@
                     <th>Y2</th>
                     <th>X3</th>
                     <th>Y3</th>
-                </tr>
-                {% for record in _records %}
-                <tr class='clickable-row' data-href="{{ url_for('update') }}" method='POST'>
-                    <td>{{ record[0] }}</td>
-                    <td>{{ record[1] }}</td>
-                    <td>{{ record[2] }}</td>
-                    <td>{{ record[3] }}</td>
-                    <td>{{ record[4] }}</td>
-                    <td>{{ record[5] }}</td>
-                    <td>{{ record[6] }}</td>
-                </tr>
-                {% endfor %}
+                </tr></thead>
+                <tbody>
+                    {% for record in _records %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('update', key=record) }}">
+                                    <input type="button" value="Select" method="POST">
+                                </a>
+                            </td>
+                            <td>{{ record }}</td>
+                            <td>{{ _records[record][0][0] }}</td>
+                            <td>{{ _records[record][0][1] }}</td>
+                            <td>{{ _records[record][0][2] }}</td>
+                            <td>{{ _records[record][0][3] }}</td>
+                            <td>{{ _records[record][0][4] }}</td>
+                            <td>{{ _records[record][0][5] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </p>
     </div>
