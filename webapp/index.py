@@ -71,6 +71,12 @@ def control(data):
     updateLog(0, data)
     return redirect(url_for('index'))
 
+@app.route('/poweroff')
+def poweroff():
+    os.system('shutdown -h')
+    Log("Turning device power off..")
+    return redirect(url_for('index'))
+
 @app.route('/move', methods = ['POST'])
 def move():
     error = 0
