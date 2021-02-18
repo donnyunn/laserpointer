@@ -2,12 +2,12 @@ from flask import Flask, flash, request, render_template, url_for, redirect, Mar
 from flask.helpers import send_from_directory
 import smbus
 import os, glob
-from pathlib import Path
+import pathlib
 from random import *
 
 app = Flask(__name__)
 
-RESOURCE_PATH = os.path.expanduser('~pi') + '/rotom/webapp/resources/'
+RESOURCE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/resources/'
 RESOURCE_EXTENSION = 'csv'
 ADDR = [int(0x41), int(0x42), int(0x43)]
 
