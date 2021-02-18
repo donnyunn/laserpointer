@@ -15,12 +15,8 @@
     <div style="padding-left:12px;">
         <h3>Control</h3>
         <p>
-            <a href="{{ url_for('poweroff') }}">
-                <input type="button" value="Device Power Off">
-            </a>
-            <br><br>
             <a href="{{ url_for('control', data=2) }}">
-                <input type="button" value="Start Calibration">
+                <input type="button" value="Calibration">
             </a>
             <br><br>
             <a href="{{ url_for('control', data=1) }}">
@@ -112,6 +108,15 @@
                     {% endfor %}
                 </tbody>
             </table>
+        </p>
+        <p>
+            <br><br>
+            <a href="{{ url_for('poweroff', data=0) }}">
+                <input type="button" value="Device Power Off">
+            </a>
+            <a href="{{ url_for('poweroff', data=1) }}">
+                <input type="button" value="Device Reboot">
+            </a>
         </p>
     </div>
 </body>
