@@ -7,9 +7,13 @@
 </head>
 
 <body>
-
-    <h1>Laser Pointer</h1>
-    {{ _log.msg }}
+    <h1>
+        <img src="{{ url_for('static', filename='image/billoint_logo.png') }}" height=50>
+        <br>
+        Laser Pointer
+    </h1>
+    
+    <!-- {{ _log.msg }} -->
     <hr>
 
     <div style="padding-left:12px;">
@@ -34,16 +38,16 @@
             <br>
             <form action="/move" method="POST">
                 Laser 1:
-                <input type="number" name="moveX1" id="moveX1" min="0" max="350" step="0.1"/>
-                <input type="number" name="moveY1" id="moveY1" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveX1" id="moveX1" min="-300" max="300" step="0.1"/>
+                <input type="number" name="moveY1" id="moveY1" min="-300" max="300" step="0.1"/>
                 <br>
                 Laser 2:
-                <input type="number" name="moveX2" id="moveX2" min="0" max="350" step="0.1"/>
-                <input type="number" name="moveY2" id="moveY2" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveX2" id="moveX2" min="-300" max="300" step="0.1"/>
+                <input type="number" name="moveY2" id="moveY2" min="-300" max="300" step="0.1"/>
                 <br>
                 Laser 3:
-                <input type="number" name="moveX3" id="moveX3" min="0" max="350" step="0.1"/>
-                <input type="number" name="moveY3" id="moveY3" min="0" max="350" step="0.1"/>
+                <input type="number" name="moveX3" id="moveX3" min="-300" max="300" step="0.1"/>
+                <input type="number" name="moveY3" id="moveY3" min="-300" max="300" step="0.1"/>
                 <br>
                 <input type="submit" value="Apply" />
             </form>
@@ -52,16 +56,16 @@
         <p>
             <form action="/offset" method="POST">
                 Laser 1:
-                <input type="number" name="offsetX1" id="offsetX1" min="-175" max="175" step="0.1"/>
-                <input type="number" name="offsetY1" id="offsetY1" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetX1" id="offsetX1" min="-300" max="300" step="0.1"/>
+                <input type="number" name="offsetY1" id="offsetY1" min="-300" max="300" step="0.1"/>
                 <br>
                 Laser 2:
-                <input type="number" name="offsetX2" id="offsetX2" min="-175" max="175" step="0.1"/>
-                <input type="number" name="offsetY2" id="offsetY2" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetX2" id="offsetX2" min="-300" max="300" step="0.1"/>
+                <input type="number" name="offsetY2" id="offsetY2" min="-300" max="300" step="0.1"/>
                 <br>
                 Laser 3:
-                <input type="number" name="offsetX3" id="offsetX3" min="-175" max="175" step="0.1"/>
-                <input type="number" name="offsetY3" id="offsetY3" min="-175" max="175" step="0.1"/>
+                <input type="number" name="offsetX3" id="offsetX3" min="-300" max="300" step="0.1"/>
+                <input type="number" name="offsetY3" id="offsetY3" min="-300" max="300" step="0.1"/>
                 <br>
                 <input type="submit" value="Apply" />
             </form>

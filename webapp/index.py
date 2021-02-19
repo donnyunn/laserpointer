@@ -42,12 +42,12 @@ def index():
 
 @app.route('/random')
 def random():
-    coord['movex1'] = randint(0, 3500)
-    coord['movey1'] = randint(0, 3500)
-    coord['movex2'] = randint(0, 3500)
-    coord['movey2'] = randint(0, 3500)
-    coord['movex3'] = randint(0, 3500)
-    coord['movey3'] = randint(0, 3500)
+    coord['movex1'] = randint(-3000, 3000)
+    coord['movey1'] = randint(-3000, 3000)
+    coord['movex2'] = randint(-3000, 3000)
+    coord['movey2'] = randint(-3000, 3000)
+    coord['movex3'] = randint(-3000, 3000)
+    coord['movey3'] = randint(-3000, 3000)
     return redirect(url_for('index'))
 
 @app.route('/control/<int:data>')
