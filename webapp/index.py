@@ -1,8 +1,7 @@
-from flask import Flask, flash, request, render_template, url_for, redirect, Markup
-from flask.helpers import send_from_directory
+from flask import Flask, request, render_template, url_for, redirect
+from datetime import datetime
 import smbus
 import os, glob
-import pathlib
 from random import *
 
 app = Flask(__name__)
@@ -24,6 +23,15 @@ coord = {
 }
 error = 0
 
+started = 0
+recordBtnNameList = {
+    str(0):'Game Start',
+    str(1):'Stop Recording'
+}
+recordMsgList = {
+    str(0):'Stopped.',
+    str(1):'Recording..'
+}
 filepaths = glob.glob(RESOURCE_PATH+'*.csv')
 filenames = []
 records = {}
@@ -35,6 +43,8 @@ def index():
         _log=log, \
         _coord=coord, \
         _error=error, \
+        _recordBtnName=recordBtnNameList[str(started)], \
+        _recordMsg=recordMsgList[str(started)], \
         _filenames=getFilenames(), \
         _records=records, \
         _fileusing=fileusing \
@@ -75,7 +85,7 @@ def control(data):
 def poweroff(data):
     if data == 0:
         Log("Turning device power off..")
-        os.system('shutdown -h')
+        os.system('shutdown -h now')
     elif data == 1:
         Log("Rebooting..")
         os.system('reboot')
@@ -167,6 +177,31 @@ def offset():
         updateLog(2, 0)
         return redirect(url_for('index'))
 
+@app.route('/start')
+def start():
+    global started
+    if os.path.isfile(RESOURCE_PATH+str(started)):
+        os.remove(RESOURCE_PATH+str(started))
+
+    if started is 0:
+        
+        started = 1
+        now = datetime.now().strftime("%y%m%d%H%M.csv")
+        f = open(RESOURCE_PATH+now, 'w')
+        f.close()
+
+        f = open(RESOURCE_PATH+str(started), 'w')
+        f.write(now)
+        f.close()
+    elif started is 1:
+
+        started = 0
+
+        f = open(RESOURCE_PATH+str(started), 'w')
+        f.close()
+
+    return redirect(url_for('index'))
+
 @app.route('/readfile', methods = ['POST'])
 def readfile():
     if request.method == 'POST':
@@ -174,6 +209,7 @@ def readfile():
         filepath = RESOURCE_PATH+filename[2:4]+filename[5:7]+filename[8:10]+filename[11:13]+filename[14:16]+'.csv'
         f = open(filepath, 'r')
         lines = f.readlines()
+        f.close()
 
         records.clear()
         for line in lines:
