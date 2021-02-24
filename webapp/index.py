@@ -3,11 +3,13 @@ from datetime import datetime
 import smbus
 import os, glob
 from random import *
+import time
 
 app = Flask(__name__)
 
 RESOURCE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/resources/'
 RESOURCE_EXTENSION = 'csv'
+HW_SETUP = 'hw_setup.txt'
 ADDR = [int(0x41), int(0x42), int(0x43)]
 
 log = {'msg':'Page is loaded.'}
@@ -17,9 +19,9 @@ coord = {
     'movex1':0, 'movey1':0,
     'movex2':0, 'movey2':0,
     'movex3':0, 'movey3':0,
-    'offsetx1':0, 'offsety1':0,
-    'offsetx2':0, 'offsety2':0,
-    'offsetx3':0, 'offsety3':0
+    'offsetx1':-5, 'offsety1':0,
+    'offsetx2':-12, 'offsety2':6,
+    'offsetx3':0, 'offsety3':5
 }
 error = 0
 
@@ -37,6 +39,58 @@ filenames = []
 records = {}
 fileusing = []
 
+def initialization():
+    f = open(RESOURCE_PATH + HW_SETUP, 'r')
+    lines = f.readlines()
+    f.close()
+
+    addrs = lines[0].split(',')
+    initdatum = []
+    initdatum.append(lines[1].split(','))
+    initdatum.append(lines[2].split(','))
+    initdatum.append(lines[3].split(','))
+
+    for i in range(0, 3):
+        tx.clear()
+        tx.append(int(float(initdatum[i][0])*10)>>8 & 0xff)
+        tx.append(int(float(initdatum[i][0])*10) & 0xff)
+        tx.append(int(float(initdatum[i][1])*10)>>8 & 0xff)
+        tx.append(int(float(initdatum[i][1])*10) & 0xff)
+        tx.append(int(float(initdatum[i][2])*10)>>8 & 0xff)
+        tx.append(int(float(initdatum[i][2])*10) & 0xff)
+        try:
+            i2c.write_i2c_block_data(ADDR[i], int(addrs[0].replace("0x",""),16), tx)
+        except:
+            Log('I2C Error')
+    # Offset
+    tx.clear()
+    tx.append(int(coord['offsetx1'])>>8 & 0xff)
+    tx.append(int(coord['offsetx1']) & 0xff)
+    tx.append(int(coord['offsety1'])>>8 & 0xff)
+    tx.append(int(coord['offsety1']) & 0xff)
+    try:
+        i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
+    except:
+        Log('I2C Error')
+    tx.clear()
+    tx.append(int(coord['offsetx2'])>>8 & 0xff)
+    tx.append(int(coord['offsetx2']) & 0xff)
+    tx.append(int(coord['offsety2'])>>8 & 0xff)
+    tx.append(int(coord['offsety2']) & 0xff)
+    try:
+        i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
+    except:
+        Log('I2C Error')
+    tx.clear()
+    tx.append(int(coord['offsetx3'])>>8 & 0xff)
+    tx.append(int(coord['offsetx3']) & 0xff)
+    tx.append(int(coord['offsety3'])>>8 & 0xff)
+    tx.append(int(coord['offsety3']) & 0xff)
+    try:
+        i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
+    except:
+        Log('I2C Error')
+
 @app.route('/')
 def index():
     return render_template('index.html', \
@@ -47,17 +101,18 @@ def index():
         _recordMsg=recordMsgList[str(started)], \
         _filenames=getFilenames(), \
         _records=records, \
-        _fileusing=fileusing \
+        _fileusing=fileusing, \
+        _image_update="image/image.jpg" \
         )
 
 @app.route('/random')
 def random():
-    coord['movex1'] = randint(-3000, 3000)
-    coord['movey1'] = randint(-3000, 3000)
-    coord['movex2'] = randint(-3000, 3000)
-    coord['movey2'] = randint(-3000, 3000)
-    coord['movex3'] = randint(-3000, 3000)
-    coord['movey3'] = randint(-3000, 3000)
+    coord['movex1'] = round(randint(-1500, 1500),-1)
+    coord['movey1'] = round(randint(-1500, 1500),-1)
+    coord['movex2'] = round(randint(-1500, 1500),-1)
+    coord['movey2'] = round(randint(-1500, 1500),-1)
+    coord['movex3'] = round(randint(-1500, 1500),-1)
+    coord['movey3'] = round(randint(-1500, 1500),-1)
     return redirect(url_for('index'))
 
 @app.route('/control/<int:data>')
@@ -77,7 +132,12 @@ def control(data):
         i2c.write_i2c_block_data(ADDR[2], 0x00, tx)
     except:
         error = 1
-    
+
+    if data == 4:
+        Log("HW Reset..")
+        time.sleep(3)
+        initialization()
+        Log("HW Reset Complate")
     updateLog(0, data)
     return redirect(url_for('index'))
 
@@ -237,6 +297,7 @@ def getFilenames():
     for path in filepaths:
         name = os.path.basename(path)
         filenames.append('20'+name[0:2]+'-'+name[2:4]+'-'+name[4:6]+' '+name[6:8]+':'+name[8:10])
+    filenames.sort()
     return filenames
 
 def Log(msg):
@@ -270,4 +331,5 @@ def updateLog(reg, data):
             Log('An error has occurred during setup offsets.')
 
 if __name__ == '__main__':
+    initialization()
     app.run(debug=True, port=80, host='0.0.0.0')
