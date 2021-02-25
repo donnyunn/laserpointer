@@ -59,6 +59,7 @@ def initialization():
         tx.append(int(float(initdatum[i][2])*10)>>8 & 0xff)
         tx.append(int(float(initdatum[i][2])*10) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[i], int(addrs[0].replace("0x",""),16), tx)
         except:
             Log('I2C Error')
@@ -69,6 +70,7 @@ def initialization():
     tx.append(int(coord['offsety1'])>>8 & 0xff)
     tx.append(int(coord['offsety1']) & 0xff)
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
     except:
         Log('I2C Error')
@@ -78,6 +80,7 @@ def initialization():
     tx.append(int(coord['offsety2'])>>8 & 0xff)
     tx.append(int(coord['offsety2']) & 0xff)
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
     except:
         Log('I2C Error')
@@ -87,6 +90,7 @@ def initialization():
     tx.append(int(coord['offsety3'])>>8 & 0xff)
     tx.append(int(coord['offsety3']) & 0xff)
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
     except:
         Log('I2C Error')
@@ -120,19 +124,22 @@ def control(data):
     error = 0
     tx.clear()
     tx.append(data)
+    print(tx)
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[0], 0x00, tx)
     except:
         error = 1
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[1], 0x00, tx)
     except:
         error = 1
     try:
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[2], 0x00, tx)
     except:
         error = 1
-
     if data == 4:
         Log("HW Reset..")
         time.sleep(3)
@@ -163,6 +170,7 @@ def move():
         tx.append(int(coord['movey1'])>>8 & 0xff)
         tx.append(int(coord['movey1']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[0], 0x01, tx)
         except:
             error = 1
@@ -175,6 +183,7 @@ def move():
         tx.append(int(coord['movey2'])>>8 & 0xff)
         tx.append(int(coord['movey2']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[1], 0x01, tx)
         except:
             error = 1
@@ -187,6 +196,7 @@ def move():
         tx.append(int(coord['movey3'])>>8 & 0xff)
         tx.append(int(coord['movey3']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[2], 0x01, tx)
         except:
             error = 1
@@ -206,6 +216,7 @@ def offset():
         tx.append(int(coord['offsety1'])>>8 & 0xff)
         tx.append(int(coord['offsety1']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
         except:
             error = 1
@@ -218,6 +229,7 @@ def offset():
         tx.append(int(coord['offsety2'])>>8 & 0xff)
         tx.append(int(coord['offsety2']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
         except:
             error = 1
@@ -230,6 +242,7 @@ def offset():
         tx.append(int(coord['offsety3'])>>8 & 0xff)
         tx.append(int(coord['offsety3']) & 0xff)
         try:
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
         except:
             error = 1
