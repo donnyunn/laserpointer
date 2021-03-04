@@ -1,12 +1,15 @@
 from flask import Flask, request, render_template, url_for, redirect
 from datetime import datetime
 import smbus
+import math
 import os, glob
 from random import *
 import time
 
 app = Flask(__name__)
 
+X0 = 1420
+Y0 = 710
 RESOURCE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/resources/'
 RESOURCE_EXTENSION = 'csv'
 HW_SETUP = 'hw_setup.txt'
@@ -21,7 +24,10 @@ coord = {
     'movex3':0, 'movey3':0,
     'offsetx1':-5, 'offsety1':0,
     'offsetx2':-12, 'offsety2':6,
-    'offsetx3':0, 'offsety3':5
+    'offsetx3':0, 'offsety3':5,
+    'laser1':0,
+    'laser2':0,
+    'laser3':0,
 }
 error = 0
 
@@ -59,7 +65,7 @@ def initialization():
         tx.append(int(float(initdatum[i][2])*10)>>8 & 0xff)
         tx.append(int(float(initdatum[i][2])*10) & 0xff)
         try:
-            time.sleep(0.1)
+            # time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[i], int(addrs[0].replace("0x",""),16), tx)
         except:
             Log('I2C Error')
@@ -70,7 +76,7 @@ def initialization():
     tx.append(int(coord['offsety1'])>>8 & 0xff)
     tx.append(int(coord['offsety1']) & 0xff)
     try:
-        time.sleep(0.1)
+        # time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
     except:
         Log('I2C Error')
@@ -80,7 +86,7 @@ def initialization():
     tx.append(int(coord['offsety2'])>>8 & 0xff)
     tx.append(int(coord['offsety2']) & 0xff)
     try:
-        time.sleep(0.1)
+        # time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
     except:
         Log('I2C Error')
@@ -90,7 +96,7 @@ def initialization():
     tx.append(int(coord['offsety3'])>>8 & 0xff)
     tx.append(int(coord['offsety3']) & 0xff)
     try:
-        time.sleep(0.1)
+        # time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
     except:
         Log('I2C Error')
@@ -111,12 +117,24 @@ def index():
 
 @app.route('/random')
 def random():
-    coord['movex1'] = round(randint(-1500, 1500),-1)
-    coord['movey1'] = round(randint(-1500, 1500),-1)
-    coord['movex2'] = round(randint(-1500, 1500),-1)
-    coord['movey2'] = round(randint(-1500, 1500),-1)
-    coord['movex3'] = round(randint(-1500, 1500),-1)
-    coord['movey3'] = round(randint(-1500, 1500),-1)
+    # coord['movex1'] = round(randint(-X0, X0),-1)
+    # coord['movey1'] = round(randint(-Y0, Y0),-1)
+    # coord['movex2'] = round(randint(-X0, X0),-1)
+    # coord['movey2'] = round(randint(-Y0, Y0),-1)
+    # coord['movex3'] = round(randint(-X0, X0),-1)
+    # coord['movey3'] = round(randint(-Y0, Y0),-1)
+    # coord['laser1'] = (coord['movex1'] + X0) - (0.2 * X0 * (coord['movey1'] - Y0))
+    # coord['laser2'] = (coord['movex2'] + X0) - (0.2 * X0 * (coord['movey2'] - Y0))
+    # coord['laser3'] = (coord['movex3'] + X0) - (0.2 * X0 * (coord['movey3'] - Y0))
+    coord['laser1'] = round(randint(1, 40328), -1)
+    coord['laser2'] = round(randint(1, 40328), -1)
+    coord['laser3'] = round(randint(1, 40328), -1)
+    coord['movex1'] = (10*coord['laser1'])%(2*X0) - X0
+    coord['movey1'] = Y0 - 10*(int(10*coord['laser1']/(2*X0)))
+    coord['movex2'] = (10*coord['laser2'])%(2*X0) - X0
+    coord['movey2'] = Y0 - 10*(int(10*coord['laser2']/(2*X0)))
+    coord['movex3'] = (10*coord['laser3'])%(2*X0) - X0
+    coord['movey3'] = Y0 - 10*(int(10*coord['laser3']/(2*X0)))
     return redirect(url_for('index'))
 
 @app.route('/control/<int:data>')
@@ -162,8 +180,11 @@ def poweroff(data):
 def move():
     error = 0
     if request.method == 'POST':
-        coord['movex1'] = float(request.form['moveX1'])*10
-        coord['movey1'] = float(request.form['moveY1'])*10
+        coord['laser1'] = int(request.form['laser1'])
+        coord['movex1'] = (10*coord['laser1'])%(2*X0) - X0
+        coord['movey1'] = Y0 - 10*(int(10*coord['laser1']/(2*X0)))
+        # coord['movex1'] = float(request.form['moveX1'])*10
+        # coord['movey1'] = float(request.form['moveY1'])*10
         tx.clear()
         tx.append(int(coord['movex1'])>>8 & 0xff)
         tx.append(int(coord['movex1']) & 0xff)
@@ -175,8 +196,11 @@ def move():
         except:
             error = 1
 
-        coord['movex2'] = float(request.form['moveX2'])*10
-        coord['movey2'] = float(request.form['moveY2'])*10
+        coord['laser2'] = int(request.form['laser2'])
+        coord['movex2'] = (10*coord['laser2'])%(2*X0) - X0
+        coord['movey2'] = Y0 - 10*(int(10*coord['laser2']/(2*X0)))
+        # coord['movex2'] = float(request.form['moveX2'])*10
+        # coord['movey2'] = float(request.form['moveY2'])*10
         tx.clear()
         tx.append(int(coord['movex2'])>>8 & 0xff)
         tx.append(int(coord['movex2']) & 0xff)
@@ -188,8 +212,11 @@ def move():
         except:
             error = 1
 
-        coord['movex3'] = float(request.form['moveX3'])*10
-        coord['movey3'] = float(request.form['moveY3'])*10
+        coord['laser3'] = int(request.form['laser3'])
+        coord['movex3'] = (10*coord['laser3'])%(2*X0) - X0
+        coord['movey3'] = Y0 - 10*(int(10*coord['laser3']/(2*X0)))
+        # coord['movex3'] = float(request.form['moveX3'])*10
+        # coord['movey3'] = float(request.form['moveY3'])*10
         tx.clear()
         tx.append(int(coord['movex3'])>>8 & 0xff)
         tx.append(int(coord['movex3']) & 0xff)
@@ -302,6 +329,9 @@ def update(key):
     coord['movey2'] = int(float(records[str(key)][0][3])*10)
     coord['movex3'] = int(float(records[str(key)][0][4])*10)
     coord['movey3'] = int(float(records[str(key)][0][5])*10)
+    coord['laser1'] = ((coord['movex1'] + X0) - (0.2*X0*(coord['movey1'] - Y0)))/10
+    coord['laser2'] = ((coord['movex2'] + X0) - (0.2*X0*(coord['movey2'] - Y0)))/10
+    coord['laser3'] = ((coord['movex3'] + X0) - (0.2*X0*(coord['movey3'] - Y0)))/10
     return redirect(url_for('index'))
 
 def getFilenames():
