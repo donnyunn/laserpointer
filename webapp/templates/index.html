@@ -81,12 +81,9 @@
                 <thead><tr>
                     <th></th>
                     <th>No.</th>
-                    <th>X1</th>
-                    <th>Y1</th>
-                    <th>X2</th>
-                    <th>Y2</th>
-                    <th>X3</th>
-                    <th>Y3</th>
+                    <th>White</th>
+                    <th>Yellow</th>
+                    <th>Red</th>
                 </tr></thead>
                 <tbody>
                     {% for record in _records %}
@@ -97,12 +94,15 @@
                                 </a>
                             </td>
                             <td>{{ record }}</td>
-                            <td>{{ _records[record][0][0] }}</td>
-                            <td>{{ _records[record][0][1] }}</td>
-                            <td>{{ _records[record][0][2] }}</td>
-                            <td>{{ _records[record][0][3] }}</td>
-                            <td>{{ _records[record][0][4] }}</td>
-                            <td>{{ _records[record][0][5] }}</td>
+                            <td>{{ _records[record][6] }}</td>
+                            <td>{{ _records[record][7] }}</td>
+                            <td>{{ _records[record][8] }}</td>
+                            <!-- <td>{{ _records[record][0] }}</td>
+                            <td>{{ _records[record][1] }}</td>
+                            <td>{{ _records[record][2] }}</td>
+                            <td>{{ _records[record][3] }}</td>
+                            <td>{{ _records[record][4] }}</td>
+                            <td>{{ _records[record][5] }}</td> -->
                         </tr>
                     {% endfor %}
                 </tbody>

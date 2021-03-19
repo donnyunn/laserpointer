@@ -314,8 +314,13 @@ def readfile():
         records.clear()
         for line in lines:
             key = line.split(',')[0]
-            records[key] = []
-            records[key].append(line.split(',')[1:7])
+            records[key] = line.split(',')[1:7]
+            try:
+                records[key].append(str(int(((int(records[key][0])*10 + X0) - (0.2*X0*(int(records[key][1])*10 - Y0)))/10)))
+                records[key].append(str(int(((int(records[key][2])*10 + X0) - (0.2*X0*(int(records[key][3])*10 - Y0)))/10)))
+                records[key].append(str(int(((int(records[key][4])*10 + X0) - (0.2*X0*(int(records[key][5])*10 - Y0)))/10)))
+            except:
+                Log("nothing")
 
     fileusing.clear()
     fileusing.append(filename)
@@ -323,12 +328,12 @@ def readfile():
 
 @app.route('/update/<key>')
 def update(key):
-    coord['movex1'] = int(float(records[str(key)][0][0])*10)
-    coord['movey1'] = int(float(records[str(key)][0][1])*10)
-    coord['movex2'] = int(float(records[str(key)][0][2])*10)
-    coord['movey2'] = int(float(records[str(key)][0][3])*10)
-    coord['movex3'] = int(float(records[str(key)][0][4])*10)
-    coord['movey3'] = int(float(records[str(key)][0][5])*10)
+    coord['movex1'] = int(float(records[str(key)][0])*10)
+    coord['movey1'] = int(float(records[str(key)][1])*10)
+    coord['movex2'] = int(float(records[str(key)][2])*10)
+    coord['movey2'] = int(float(records[str(key)][3])*10)
+    coord['movex3'] = int(float(records[str(key)][4])*10)
+    coord['movey3'] = int(float(records[str(key)][5])*10)
     coord['laser1'] = ((coord['movex1'] + X0) - (0.2*X0*(coord['movey1'] - Y0)))/10
     coord['laser2'] = ((coord['movex2'] + X0) - (0.2*X0*(coord['movey2'] - Y0)))/10
     coord['laser3'] = ((coord['movex3'] + X0) - (0.2*X0*(coord['movey3'] - Y0)))/10
