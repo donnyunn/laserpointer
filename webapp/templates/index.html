@@ -44,17 +44,17 @@
                 Laser 1:
                 <input type="number" name="moveX1" id="moveX1" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
                 <input type="number" name="moveY1" id="moveY1" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
-                <input type="number" name="laser1" id="laser1" min="0" max="40328" step="1" style="height:20px;width:60px"/>
+                <input type="number" name="laser1" id="laser1" min="1" max="40328" step="1" style="height:20px;width:60px"/>
                 <br>
                 Laser 2:
                 <input type="number" name="moveX2" id="moveX2" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
                 <input type="number" name="moveY2" id="moveY2" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
-                <input type="number" name="laser2" id="laser2" min="0" max="40328" step="1" style="height:20px;width:60px"/>
+                <input type="number" name="laser2" id="laser2" min="1" max="40328" step="1" style="height:20px;width:60px"/>
                 <br>
                 Laser 3:
                 <input type="number" name="moveX3" id="moveX3" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
                 <input type="number" name="moveY3" id="moveY3" min="-150" max="150" step="1" style="height:20px;width:60px;display:none"/>
-                <input type="number" name="laser3" id="laser3" min="0" max="40328" step="1" style="height:20px;width:60px"/>
+                <input type="number" name="laser3" id="laser3" min="1" max="40328" step="1" style="height:20px;width:60px"/>
                 <br>
                 <input type="submit" value="Apply" style="height:40px;width:100px"/>
             </form>
@@ -97,12 +97,14 @@
                             <td>{{ _records[record][6] }}</td>
                             <td>{{ _records[record][7] }}</td>
                             <td>{{ _records[record][8] }}</td>
-                            <!-- <td>{{ _records[record][0] }}</td>
+<!-- for debugging -->
+                            <td>{{ _records[record][0] }}</td>
                             <td>{{ _records[record][1] }}</td>
                             <td>{{ _records[record][2] }}</td>
                             <td>{{ _records[record][3] }}</td>
                             <td>{{ _records[record][4] }}</td>
-                            <td>{{ _records[record][5] }}</td> -->
+                            <td>{{ _records[record][5] }}</td>
+<!-- for debugging -->
                         </tr>
                     {% endfor %}
                 </tbody>

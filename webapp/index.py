@@ -25,9 +25,9 @@ coord = {
     'offsetx1':-5, 'offsety1':0,
     'offsetx2':-12, 'offsety2':6,
     'offsetx3':0, 'offsety3':5,
-    'laser1':0,
-    'laser2':0,
-    'laser3':0,
+    'laser1':20306,
+    'laser2':20306,
+    'laser3':20306,
 }
 error = 0
 
@@ -180,6 +180,7 @@ def poweroff(data):
 def move():
     error = 0
     if request.method == 'POST':
+        initialization()
         coord['laser1'] = int(request.form['laser1'])
         coord['movex1'] = (10*coord['laser1'])%(2*X0) - X0
         coord['movey1'] = Y0 - 10*(int(10*coord['laser1']/(2*X0)))
@@ -316,9 +317,9 @@ def readfile():
             key = line.split(',')[0]
             records[key] = line.split(',')[1:7]
             try:
-                records[key].append(str(int(((int(records[key][0])*10 + X0) - (0.2*X0*(int(records[key][1])*10 - Y0)))/10)))
-                records[key].append(str(int(((int(records[key][2])*10 + X0) - (0.2*X0*(int(records[key][3])*10 - Y0)))/10)))
-                records[key].append(str(int(((int(records[key][4])*10 + X0) - (0.2*X0*(int(records[key][5])*10 - Y0)))/10)))
+                records[key].append(str(int(((int(float(records[key][0]))*10 + X0) - (0.2*X0*(int(float(records[key][1]))*10 - Y0)))/10)))
+                records[key].append(str(int(((int(float(records[key][2]))*10 + X0) - (0.2*X0*(int(float(records[key][3]))*10 - Y0)))/10)))
+                records[key].append(str(int(((int(float(records[key][4]))*10 + X0) - (0.2*X0*(int(float(records[key][5]))*10 - Y0)))/10)))
             except:
                 Log("nothing")
 
@@ -334,9 +335,9 @@ def update(key):
     coord['movey2'] = int(float(records[str(key)][3])*10)
     coord['movex3'] = int(float(records[str(key)][4])*10)
     coord['movey3'] = int(float(records[str(key)][5])*10)
-    coord['laser1'] = ((coord['movex1'] + X0) - (0.2*X0*(coord['movey1'] - Y0)))/10
-    coord['laser2'] = ((coord['movex2'] + X0) - (0.2*X0*(coord['movey2'] - Y0)))/10
-    coord['laser3'] = ((coord['movex3'] + X0) - (0.2*X0*(coord['movey3'] - Y0)))/10
+    coord['laser1'] = (((coord['movex1'] + X0) - (0.2*X0*(coord['movey1'] - Y0)))/10)
+    coord['laser2'] = (((coord['movex2'] + X0) - (0.2*X0*(coord['movey2'] - Y0)))/10)
+    coord['laser3'] = (((coord['movex3'] + X0) - (0.2*X0*(coord['movey3'] - Y0)))/10)
     return redirect(url_for('index'))
 
 def getFilenames():
