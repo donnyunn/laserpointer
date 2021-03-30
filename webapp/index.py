@@ -22,9 +22,9 @@ coord = {
     'movex1':0, 'movey1':0,
     'movex2':0, 'movey2':0,
     'movex3':0, 'movey3':0,
-    'offsetx1':-5, 'offsety1':0,
-    'offsetx2':-12, 'offsety2':6,
-    'offsetx3':0, 'offsety3':5,
+    'offsetx1':0, 'offsety1':390,
+    'offsetx2':0, 'offsety2':330,
+    'offsetx3':0, 'offsety3':220,
     'laser1':19952,
     'laser2':19952,
     'laser3':19952,
@@ -130,12 +130,12 @@ def random():
     coord['laser1'] = round(randint(1, 39903), -1)
     coord['laser2'] = round(randint(1, 39903), -1)
     coord['laser3'] = round(randint(1, 39903), -1)
-    coord['movex1'] = 10 * (coord['laser1'] % (X0*2/10-1) - (X0/10))
-    coord['movey1'] = (Y0 - 10) - 10*(coord['laser1'] // (X0*2/10-1))
-    coord['movex2'] = 10 * (coord['laser2'] % (X0*2/10-1) - (X0/10))
-    coord['movey2'] = (Y0 - 10) - 10*(coord['laser2'] // (X0*2/10-1))
-    coord['movex3'] = 10 * (coord['laser3'] % (X0*2/10-1) - (X0/10))
-    coord['movey3'] = (Y0 - 10) - 10*(coord['laser3'] // (X0*2/10-1))
+    coord['movex1'] = 10 * ((coord['laser1']-1) % (X0*2/10-1) + 1 - (X0/10))
+    coord['movey1'] = (Y0 - 10) - 10*((coord['laser1']-1) // (X0*2/10-1))
+    coord['movex2'] = 10 * ((coord['laser2']-1) % (X0*2/10-1) + 1 - (X0/10))
+    coord['movey2'] = (Y0 - 10) - 10*((coord['laser2']-1) // (X0*2/10-1))
+    coord['movex3'] = 10 * ((coord['laser3']-1) % (X0*2/10-1) + 1 - (X0/10))
+    coord['movey3'] = (Y0 - 10) - 10*((coord['laser3']-1) // (X0*2/10-1))
     print(coord)
 
     return redirect(url_for('index'))
@@ -185,8 +185,8 @@ def move():
     if request.method == 'POST':
         initialization()
         coord['laser1'] = int(request.form['laser1'])
-        coord['movex1'] = 10 * (coord['laser1'] % (X0*2/10-1) - (X0/10))
-        coord['movey1'] = (Y0 - 10) - 10*(coord['laser1'] // (X0*2/10-1))
+        coord['movex1'] = 10 * ((coord['laser1']-1) % (X0*2/10-1) + 1 - (X0/10))
+        coord['movey1'] = (Y0 - 10) - 10*((coord['laser1']-1) // (X0*2/10-1))
         # coord['movex1'] = float(request.form['moveX1'])*10
         # coord['movey1'] = float(request.form['moveY1'])*10
         tx.clear()
@@ -195,14 +195,14 @@ def move():
         tx.append(int(coord['movey1'])>>8 & 0xff)
         tx.append(int(coord['movey1']) & 0xff)
         try:
-            time.sleep(0.1)
+            time.sleep(0.2)
             i2c.write_i2c_block_data(ADDR[0], 0x01, tx)
         except:
             error = 1
 
         coord['laser2'] = int(request.form['laser2'])
-        coord['movex2'] = 10 * (coord['laser2'] % (X0*2/10-1) - (X0/10))
-        coord['movey2'] = (Y0 - 10) - 10*(coord['laser2'] // (X0*2/10-1))
+        coord['movex2'] = 10 * ((coord['laser2']-1) % (X0*2/10-1) + 1 - (X0/10))
+        coord['movey2'] = (Y0 - 10) - 10*((coord['laser2']-1) // (X0*2/10-1))
         # coord['movex2'] = float(request.form['moveX2'])*10
         # coord['movey2'] = float(request.form['moveY2'])*10
         tx.clear()
@@ -217,8 +217,8 @@ def move():
             error = 1
 
         coord['laser3'] = int(request.form['laser3'])
-        coord['movex3'] = 10 * (coord['laser3'] % (X0*2/10-1) - (X0/10))
-        coord['movey3'] = (Y0 - 10) - 10*(coord['laser3'] // (X0*2/10-1))
+        coord['movex3'] = 10 * ((coord['laser3']-1) % (X0*2/10-1) + 1 - (X0/10))
+        coord['movey3'] = (Y0 - 10) - 10*((coord['laser3']-1) // (X0*2/10-1))
         # coord['movex3'] = float(request.form['moveX3'])*10
         # coord['movey3'] = float(request.form['moveY3'])*10
         tx.clear()
