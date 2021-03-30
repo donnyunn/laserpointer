@@ -25,9 +25,9 @@ coord = {
     'offsetx1':-5, 'offsety1':0,
     'offsetx2':-12, 'offsety2':6,
     'offsetx3':0, 'offsety3':5,
-    'laser1':20306,
-    'laser2':20306,
-    'laser3':20306,
+    'laser1':19952,
+    'laser2':19952,
+    'laser3':19952,
 }
 error = 0
 
@@ -117,24 +117,27 @@ def index():
 
 @app.route('/random')
 def random():
-    # coord['movex1'] = round(randint(-X0, X0),-1)
-    # coord['movey1'] = round(randint(-Y0, Y0),-1)
-    # coord['movex2'] = round(randint(-X0, X0),-1)
-    # coord['movey2'] = round(randint(-Y0, Y0),-1)
-    # coord['movex3'] = round(randint(-X0, X0),-1)
-    # coord['movey3'] = round(randint(-Y0, Y0),-1)
-    # coord['laser1'] = (coord['movex1'] + X0) - (0.2 * X0 * (coord['movey1'] - Y0))
-    # coord['laser2'] = (coord['movex2'] + X0) - (0.2 * X0 * (coord['movey2'] - Y0))
-    # coord['laser3'] = (coord['movex3'] + X0) - (0.2 * X0 * (coord['movey3'] - Y0))
-    coord['laser1'] = round(randint(1, 40328), -1)
-    coord['laser2'] = round(randint(1, 40328), -1)
-    coord['laser3'] = round(randint(1, 40328), -1)
-    coord['movex1'] = (10*coord['laser1'])%(2*X0) - X0
-    coord['movey1'] = Y0 - 10*(int(10*coord['laser1']/(2*X0)))
-    coord['movex2'] = (10*coord['laser2'])%(2*X0) - X0
-    coord['movey2'] = Y0 - 10*(int(10*coord['laser2']/(2*X0)))
-    coord['movex3'] = (10*coord['laser3'])%(2*X0) - X0
-    coord['movey3'] = Y0 - 10*(int(10*coord['laser3']/(2*X0)))
+    # coord['movex1'] = round(randint(-X0/10, X0/10),-1)
+    # coord['movey1'] = round(randint(-Y0/10, Y0/10),-1)
+    # coord['movex2'] = round(randint(-X0/10, X0/10),-1)
+    # coord['movey2'] = round(randint(-Y0/10, Y0/10),-1)
+    # coord['movex3'] = round(randint(-X0/10, X0/10),-1)
+    # coord['movey3'] = round(randint(-Y0/10, Y0/10),-1)
+    # coord['laser1'] = ((coord['movex1']*10 + X0) - (0.2 * X0 * (coord['movey1']*10 - Y0)))/10
+    # coord['laser2'] = ((coord['movex2']*10 + X0) - (0.2 * X0 * (coord['movey2']*10 - Y0)))/10
+    # coord['laser3'] = ((coord['movex3']*10 + X0) - (0.2 * X0 * (coord['movey3']*10 - Y0)))/10
+
+    coord['laser1'] = round(randint(1, 39903), -1)
+    coord['laser2'] = round(randint(1, 39903), -1)
+    coord['laser3'] = round(randint(1, 39903), -1)
+    coord['movex1'] = 10 * (coord['laser1'] % (X0*2/10-1) - (X0/10))
+    coord['movey1'] = (Y0 - 10) - 10*(coord['laser1'] // (X0*2/10-1))
+    coord['movex2'] = 10 * (coord['laser2'] % (X0*2/10-1) - (X0/10))
+    coord['movey2'] = (Y0 - 10) - 10*(coord['laser2'] // (X0*2/10-1))
+    coord['movex3'] = 10 * (coord['laser3'] % (X0*2/10-1) - (X0/10))
+    coord['movey3'] = (Y0 - 10) - 10*(coord['laser3'] // (X0*2/10-1))
+    print(coord)
+
     return redirect(url_for('index'))
 
 @app.route('/control/<int:data>')
@@ -182,8 +185,8 @@ def move():
     if request.method == 'POST':
         initialization()
         coord['laser1'] = int(request.form['laser1'])
-        coord['movex1'] = (10*coord['laser1'])%(2*X0) - X0
-        coord['movey1'] = Y0 - 10*(int(10*coord['laser1']/(2*X0)))
+        coord['movex1'] = 10 * (coord['laser1'] % (X0*2/10-1) - (X0/10))
+        coord['movey1'] = (Y0 - 10) - 10*(coord['laser1'] // (X0*2/10-1))
         # coord['movex1'] = float(request.form['moveX1'])*10
         # coord['movey1'] = float(request.form['moveY1'])*10
         tx.clear()
@@ -198,8 +201,8 @@ def move():
             error = 1
 
         coord['laser2'] = int(request.form['laser2'])
-        coord['movex2'] = (10*coord['laser2'])%(2*X0) - X0
-        coord['movey2'] = Y0 - 10*(int(10*coord['laser2']/(2*X0)))
+        coord['movex2'] = 10 * (coord['laser2'] % (X0*2/10-1) - (X0/10))
+        coord['movey2'] = (Y0 - 10) - 10*(coord['laser2'] // (X0*2/10-1))
         # coord['movex2'] = float(request.form['moveX2'])*10
         # coord['movey2'] = float(request.form['moveY2'])*10
         tx.clear()
@@ -214,8 +217,8 @@ def move():
             error = 1
 
         coord['laser3'] = int(request.form['laser3'])
-        coord['movex3'] = (10*coord['laser3'])%(2*X0) - X0
-        coord['movey3'] = Y0 - 10*(int(10*coord['laser3']/(2*X0)))
+        coord['movex3'] = 10 * (coord['laser3'] % (X0*2/10-1) - (X0/10))
+        coord['movey3'] = (Y0 - 10) - 10*(coord['laser3'] // (X0*2/10-1))
         # coord['movex3'] = float(request.form['moveX3'])*10
         # coord['movey3'] = float(request.form['moveY3'])*10
         tx.clear()
@@ -316,10 +319,14 @@ def readfile():
         for line in lines:
             key = line.split(',')[0]
             records[key] = line.split(',')[1:7]
+            print(records[key])
             try:
-                records[key].append(str(int(((int(float(records[key][0]))*10 + X0) - (0.2*X0*(int(float(records[key][1]))*10 - Y0)))/10)))
-                records[key].append(str(int(((int(float(records[key][2]))*10 + X0) - (0.2*X0*(int(float(records[key][3]))*10 - Y0)))/10)))
-                records[key].append(str(int(((int(float(records[key][4]))*10 + X0) - (0.2*X0*(int(float(records[key][5]))*10 - Y0)))/10)))
+                # records[key].append(str(int(((int(float(records[key][0]))*10 + X0) - (0.2*X0*(int(float(records[key][1]))*10 - Y0)))/10)))
+                # records[key].append(str(int(((int(float(records[key][2]))*10 + X0) - (0.2*X0*(int(float(records[key][3]))*10 - Y0)))/10)))
+                # records[key].append(str(int(((int(float(records[key][4]))*10 + X0) - (0.2*X0*(int(float(records[key][5]))*10 - Y0)))/10)))
+                records[key].append(str(int(((int(float(records[key][0]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][1]))*10)))/10)))
+                records[key].append(str(int(((int(float(records[key][2]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][3]))*10)))/10)))
+                records[key].append(str(int(((int(float(records[key][4]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][5]))*10)))/10)))
             except:
                 Log("nothing")
 
@@ -335,9 +342,9 @@ def update(key):
     coord['movey2'] = int(float(records[str(key)][3])*10)
     coord['movex3'] = int(float(records[str(key)][4])*10)
     coord['movey3'] = int(float(records[str(key)][5])*10)
-    coord['laser1'] = (((coord['movex1'] + X0) - (0.2*X0*(coord['movey1'] - Y0)))/10)
-    coord['laser2'] = (((coord['movex2'] + X0) - (0.2*X0*(coord['movey2'] - Y0)))/10)
-    coord['laser3'] = (((coord['movex3'] + X0) - (0.2*X0*(coord['movey3'] - Y0)))/10)
+    coord['laser1'] = ((coord['movex1'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey1']))) / 10
+    coord['laser2'] = ((coord['movex2'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey2']))) / 10
+    coord['laser3'] = ((coord['movex3'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey3']))) / 10
     return redirect(url_for('index'))
 
 def getFilenames():
