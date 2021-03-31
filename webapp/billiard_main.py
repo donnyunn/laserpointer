@@ -1,13 +1,14 @@
 import os.path
-import billiard_submain
+import billiard_sub
 import time
 
 folder_directory = os.path.dirname(os.path.abspath(__file__)) + '/resources/'
 file_1_directory = folder_directory + '1'
 while True:
     if os.path.isfile(file_1_directory) == True:
-        billiard_submain.submain_func()
-        print()
+        print("Game Start!")
+        billiard_sub.sub_func()
+        print("Game Finish!")
     time.sleep(1)
 
 
