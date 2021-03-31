@@ -8,7 +8,7 @@ while True:
     if os.path.isfile(file_1_directory) == True:
         print("Game Start!")
         billiard_sub.sub_func()
-        print("Game Finish!")
+        break
     time.sleep(1)
 
-
+print("Game Finish!")

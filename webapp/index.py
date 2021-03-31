@@ -5,11 +5,13 @@ import math
 import os, glob
 from random import *
 import time
+import threading
 
 app = Flask(__name__)
 
 X0 = 1420
 Y0 = 710
+CAMERA_PATH = os.path.dirname(os.path.abspath(__file__)) + '/billiard_main.py'
 RESOURCE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/resources/'
 RESOURCE_EXTENSION = 'csv'
 HW_SETUP = 'hw_setup.txt'
@@ -289,6 +291,9 @@ def start():
 
     if started is 0:
         
+        t = threading.Thread(target=threadCamera)
+        t.start()
+
         started = 1
         now = datetime.now().strftime("%y%m%d%H%M.csv")
         f = open(RESOURCE_PATH+now, 'w')
@@ -321,9 +326,17 @@ def readfile():
             records[key] = line.split(',')[1:7]
             print(records[key])
             try:
-                # records[key].append(str(int(((int(float(records[key][0]))*10 + X0) - (0.2*X0*(int(float(records[key][1]))*10 - Y0)))/10)))
-                # records[key].append(str(int(((int(float(records[key][2]))*10 + X0) - (0.2*X0*(int(float(records[key][3]))*10 - Y0)))/10)))
-                # records[key].append(str(int(((int(float(records[key][4]))*10 + X0) - (0.2*X0*(int(float(records[key][5]))*10 - Y0)))/10)))
+                # x1 = int(float(records[key][0]))
+                # y1 = int(float(records[key][1]))
+                # x2 = int(float(records[key][2]))
+                # y2 = int(float(records[key][3]))
+                # x3 = int(float(records[key][4]))
+                # y3 = int(float(records[key][5]))
+                # print(x1, y1, x2, y2, x3, y3)
+                # records[key].append(str(int(((x1*10 + X0) + ((0.2*X0-1) * ((Y0-10) - y1*10)))/10)))
+                # records[key].append(str(int(((x2*10 + X0) + ((0.2*X0-1) * ((Y0-10) - y2*10)))/10)))
+                # records[key].append(str(int(((x3*10 + X0) + ((0.2*X0-1) * ((Y0-10) - y3*10)))/10)))
+
                 records[key].append(str(int(((int(float(records[key][0]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][1]))*10)))/10)))
                 records[key].append(str(int(((int(float(records[key][2]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][3]))*10)))/10)))
                 records[key].append(str(int(((int(float(records[key][4]))*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(float(records[key][5]))*10)))/10)))
@@ -342,9 +355,13 @@ def update(key):
     coord['movey2'] = int(float(records[str(key)][3])*10)
     coord['movex3'] = int(float(records[str(key)][4])*10)
     coord['movey3'] = int(float(records[str(key)][5])*10)
-    coord['laser1'] = ((coord['movex1'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey1']))) / 10
-    coord['laser2'] = ((coord['movex2'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey2']))) / 10
-    coord['laser3'] = ((coord['movex3'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey3']))) / 10
+    coord['laser1'] = int(((int(coord['movex1']/10)*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(coord['movey1']/10)*10))) / 10)
+    coord['laser2'] = int(((int(coord['movex2']/10)*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(coord['movey2']/10)*10))) / 10)
+    coord['laser3'] = int(((int(coord['movex3']/10)*10 + X0) + ((0.2*X0-1) * ((Y0-10) - int(coord['movey3']/10)*10))) / 10)
+    # coord['laser1'] = int(((coord['movex1'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey1']))) / 10)
+    # coord['laser2'] = int(((coord['movex2'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey2']))) / 10)
+    # coord['laser3'] = int(((coord['movex3'] + X0) + ((0.2*X0-1) * ((Y0-10) - coord['movey3']))) / 10)
+    print(coord)
     return redirect(url_for('index'))
 
 def getFilenames():
@@ -353,8 +370,12 @@ def getFilenames():
     for path in filepaths:
         name = os.path.basename(path)
         filenames.append('20'+name[0:2]+'-'+name[2:4]+'-'+name[4:6]+' '+name[6:8]+':'+name[8:10])
-    filenames.sort()
+    filenames.sort(reverse=True)
     return filenames
+
+def threadCamera():
+    os.system('python3 ' + CAMERA_PATH)
+    print('thread stop')
 
 def Log(msg):
     log['msg'] = msg
