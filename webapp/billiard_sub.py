@@ -104,7 +104,7 @@ def variables_setting():
 
     table_real_length = 2945
     table_real_height = 1521
-    table_real_bumper = 52  # 52
+    table_real_bumper = 32  # 52
     key_value = 0
 
     global hand_filter_time, time_count
@@ -120,8 +120,21 @@ def error_check(past, new, range):
     return value
 
 
-def real_coordinate(value, center, max, min, real_length):
-    return (value - center) * real_length / (max - min)
+def real_coordinate_x(value, center, max, min, real_length):
+     output_val = (value - center) * real_length / (max - min)
+     if output_val >= 141:
+        output_val = 140.9
+     elif output_val <= -141:
+        output_val = -140.9
+     return (value - center) * real_length / (max - min)
+    
+def real_coordinate_y(value, center, max, min, real_length):
+     output_val = (value - center) * real_length / (max - min)
+     if output_val >= 70:
+        output_val = 69.9
+     elif output_val <= -70:
+        output_val = -69.9
+     return (value - center) * real_length / (max - min)
 
 
 def initialize_table_recog():
@@ -435,11 +448,11 @@ def recog_balls():
             cv2.circle(frame_ROI, (int(x), int(y)), int(radius), (0, 0, 255), 2)  # 2
             cv2.circle(frame_ROI, center, 5, (0, 0, 255), -1)  # -1
         b = np.array([radius, x, y])
-        b_r = np.array([(real_coordinate(radius, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate(radius, 0, tr[1],
+        b_r = np.array([(real_coordinate_x(radius, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate_y(radius, 0, tr[1],
                                                                                                        bl[1],
                                                                                                        table_real_height - 2*table_real_bumper)) / 2,
-                        real_coordinate(x, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
-                        real_coordinate(y, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
+                        real_coordinate_x(x, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
+                        real_coordinate_y(y, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
 
     if len(cnts2) > 0:
         # find the largest contour in the mask, then use
@@ -456,11 +469,11 @@ def recog_balls():
             cv2.circle(frame_ROI, (int(x2), int(y2)), int(radius2), (0, 0, 255), 2)  # 2
             cv2.circle(frame_ROI, center2, 5, (255, 255, 255), -1)  # -1
         b2 = np.array([radius2, x2, y2])
-        b2_r = np.array([(real_coordinate(radius2, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate(radius2, 0,
+        b2_r = np.array([(real_coordinate_x(radius2, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate_y(radius2, 0,
                                                                                                          tr[1], bl[1],
                                                                                                          table_real_height - 2*table_real_bumper)) / 2,
-                         real_coordinate(x2, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
-                         real_coordinate(y2, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
+                         real_coordinate_x(x2, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
+                         real_coordinate_y(y2, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
 
     if len(cnts3) > 0:
         # find the largest contour in the mask, then use
@@ -477,11 +490,11 @@ def recog_balls():
             cv2.circle(frame_ROI, (int(x3), int(y3)), int(radius3), (0, 255, 255), 2)  # 2
             cv2.circle(frame_ROI, center3, 5, (255, 255, 255), -1)  # -1
         b3 = np.array([radius3, x3, y3])
-        b3_r = np.array([(real_coordinate(radius3, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate(radius3, 0,
+        b3_r = np.array([(real_coordinate_x(radius3, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate_y(radius3, 0,
                                                                                                          tr[1], bl[1],
                                                                                                          table_real_height - 2*table_real_bumper)) / 2,
-                         real_coordinate(x3, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
-                         real_coordinate(y3, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
+                         real_coordinate_x(x3, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
+                         real_coordinate_y(y3, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
     x_table = (bl[0]+tr[0])/2
     y_table = (bl[1]+tr[1])/2
     tl = [tr[0], bl[1]]
@@ -491,11 +504,11 @@ def recog_balls():
     cv2.circle(frame, center4, 5, (0, 0, 255), -1)
     b4 = np.array([radius_table, x_table, y_table])
     b4_r = np.array(
-        [(real_coordinate(radius_table, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate(radius_table, 0, tr[1],
+        [(real_coordinate_x(radius_table, 0, tr[0], bl[0], table_real_length - 2*table_real_bumper) + real_coordinate_y(radius_table, 0, tr[1],
                                                                                               bl[1],
                                                                                               table_real_height - 2*table_real_bumper)) / 2,
-         real_coordinate(x_table, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
-         real_coordinate(y_table, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
+         real_coordinate_x(x_table, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
+         real_coordinate_y(y_table, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
 
     frame = cv2.line(frame, (tl[0], tl[1]), (tr[0], tr[1]), (0, 255, 0), 5)
     frame = cv2.line(frame, (tr[0], tr[1]), (br[0], br[1]), (0, 255, 0), 5)
@@ -657,9 +670,9 @@ def billiard_rule():
                     print("end_param : ", end_param)
                     shape_counter = 0
                     for i in circle_shape[0]:
-                        bbb_x = real_coordinate(i[0], (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper)
-                        bbb_y = -real_coordinate(i[1], (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)
-                        bbb_r = real_coordinate(i[2], 0, tr[0], bl[0], table_real_length - 2*table_real_bumper)
+                        bbb_x = real_coordinate_x(i[0], (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper)
+                        bbb_y = -real_coordinate_y(i[1], (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)
+                        bbb_r = real_coordinate_x(i[2], 0, tr[0], bl[0], table_real_length - 2*table_real_bumper)
                         if error_check(a_r[-1, 0], bbb_r, 5) == 1 and error_check(a_r[-1, 1], bbb_x,
                                                                                   30) == 1 and error_check(a_r[-1, 2],
                                                                                                            bbb_y,

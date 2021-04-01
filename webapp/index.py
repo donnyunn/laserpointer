@@ -24,9 +24,9 @@ coord = {
     'movex1':0, 'movey1':0,
     'movex2':0, 'movey2':0,
     'movex3':0, 'movey3':0,
-    'offsetx1':0, 'offsety1':390,
-    'offsetx2':0, 'offsety2':330,
-    'offsetx3':0, 'offsety3':220,
+    'offsetx1':0, 'offsety1':310,
+    'offsetx2':0, 'offsety2':250,
+    'offsetx3':0, 'offsety3':200,
     'laser1':19952,
     'laser2':19952,
     'laser3':19952,
@@ -192,10 +192,11 @@ def move():
         # coord['movex1'] = float(request.form['moveX1'])*10
         # coord['movey1'] = float(request.form['moveY1'])*10
         tx.clear()
-        tx.append(int(coord['movex1'])>>8 & 0xff)
-        tx.append(int(coord['movex1']) & 0xff)
-        tx.append(int(coord['movey1'])>>8 & 0xff)
-        tx.append(int(coord['movey1']) & 0xff)
+        x, y = transCoord1(int(coord['movex1']), int(coord['movey1']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
         try:
             time.sleep(0.2)
             i2c.write_i2c_block_data(ADDR[0], 0x01, tx)
@@ -208,10 +209,11 @@ def move():
         # coord['movex2'] = float(request.form['moveX2'])*10
         # coord['movey2'] = float(request.form['moveY2'])*10
         tx.clear()
-        tx.append(int(coord['movex2'])>>8 & 0xff)
-        tx.append(int(coord['movex2']) & 0xff)
-        tx.append(int(coord['movey2'])>>8 & 0xff)
-        tx.append(int(coord['movey2']) & 0xff)
+        x, y = transCoord2(int(coord['movex2']), int(coord['movey2']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
         try:
             time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[1], 0x01, tx)
@@ -224,10 +226,11 @@ def move():
         # coord['movex3'] = float(request.form['moveX3'])*10
         # coord['movey3'] = float(request.form['moveY3'])*10
         tx.clear()
-        tx.append(int(coord['movex3'])>>8 & 0xff)
-        tx.append(int(coord['movex3']) & 0xff)
-        tx.append(int(coord['movey3'])>>8 & 0xff)
-        tx.append(int(coord['movey3']) & 0xff)
+        x, y = transCoord3(int(coord['movex3']), int(coord['movey3']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
         try:
             time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[2], 0x01, tx)
@@ -244,10 +247,15 @@ def offset():
         coord['offsetx1'] = float(request.form['offsetX1'])*10
         coord['offsety1'] = float(request.form['offsetY1'])*10
         tx.clear()
-        tx.append(int(coord['offsetx1'])>>8 & 0xff)
-        tx.append(int(coord['offsetx1']) & 0xff)
-        tx.append(int(coord['offsety1'])>>8 & 0xff)
-        tx.append(int(coord['offsety1']) & 0xff)
+        x, y = transCoord1(int(coord['offsetx1']), int(coord['offsety1']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
+        # tx.append(int(coord['offsetx1'])>>8 & 0xff)
+        # tx.append(int(coord['offsetx1']) & 0xff)
+        # tx.append(int(coord['offsety1'])>>8 & 0xff)
+        # tx.append(int(coord['offsety1']) & 0xff)
         try:
             time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
@@ -257,10 +265,15 @@ def offset():
         coord['offsetx2'] = float(request.form['offsetX2'])*10
         coord['offsety2'] = float(request.form['offsetY2'])*10
         tx.clear()
-        tx.append(int(coord['offsetx2'])>>8 & 0xff)
-        tx.append(int(coord['offsetx2']) & 0xff)
-        tx.append(int(coord['offsety2'])>>8 & 0xff)
-        tx.append(int(coord['offsety2']) & 0xff)
+        x, y = transCoord2(int(coord['offsetx2']), int(coord['offsety2']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
+        # tx.append(int(coord['offsetx2'])>>8 & 0xff)
+        # tx.append(int(coord['offsetx2']) & 0xff)
+        # tx.append(int(coord['offsety2'])>>8 & 0xff)
+        # tx.append(int(coord['offsety2']) & 0xff)
         try:
             time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
@@ -270,10 +283,15 @@ def offset():
         coord['offsetx3'] = float(request.form['offsetX3'])*10
         coord['offsety3'] = float(request.form['offsetY3'])*10
         tx.clear()
-        tx.append(int(coord['offsetx3'])>>8 & 0xff)
-        tx.append(int(coord['offsetx3']) & 0xff)
-        tx.append(int(coord['offsety3'])>>8 & 0xff)
-        tx.append(int(coord['offsety3']) & 0xff)
+        x, y = transCoord3(int(coord['offsetx3']), int(coord['offsety3']))
+        tx.append(x>>8 & 0xff)
+        tx.append(x & 0xff)
+        tx.append(y>>8 & 0xff)
+        tx.append(y & 0xff)
+        # tx.append(int(coord['offsetx3'])>>8 & 0xff)
+        # tx.append(int(coord['offsetx3']) & 0xff)
+        # tx.append(int(coord['offsety3'])>>8 & 0xff)
+        # tx.append(int(coord['offsety3']) & 0xff)
         try:
             time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
@@ -376,6 +394,22 @@ def getFilenames():
 def threadCamera():
     os.system('python3 ' + CAMERA_PATH)
     print('thread stop')
+
+def transCoord1(x_camera, y_camera):
+    x_laser = x_camera
+    y_laser = y_camera
+    print('1) x=%d, y=%d' % (x_laser, y_laser))
+    return x_laser, y_laser
+def transCoord2(x_camera, y_camera):
+    x_laser = x_camera
+    y_laser = y_camera
+    print('2) x=%d, y=%d' % (x_laser, y_laser))
+    return x_laser, y_laser
+def transCoord3(x_camera, y_camera):
+    x_laser = x_camera
+    y_laser = y_camera
+    print('3) x=%d, y=%d' % (x_laser, y_laser))
+    return x_laser, y_laser
 
 def Log(msg):
     log['msg'] = msg
