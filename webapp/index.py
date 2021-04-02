@@ -396,20 +396,149 @@ def threadCamera():
     print('thread stop')
 
 def transCoord1(x_camera, y_camera):
-    x_laser = x_camera
-    y_laser = y_camera
-    print('1) x=%d, y=%d' % (x_laser, y_laser))
-    return x_laser, y_laser
+    x_camera = x_camera / 10
+    y_camera = y_camera / 10
+    
+    if (x_camera >= 0) and (y_camera >= 0):
+        A =1.002836072911788
+        B = -0.015728094503174
+        C = 0
+        D = 0.013644028202881
+        E = 1.399800410782459
+        F = 0
+        G = -2.701844801195503e-04
+        H = 0.001442380217459
+    elif (x_camera < 0) and (y_camera >= 0):
+        A =  1.113348002768265
+        B = -0.015448588109139
+        C =  0
+        D = 0.014746331162494
+        E = 1.374924341713333
+        F = 3.971368159331492e-16
+        G = -2.809669996865000e-04
+        H = 0.001162873823424
+    elif (x_camera < 0) and (y_camera < 0):
+        A = 1.070528300681584
+        B =  0
+        C =  0
+        D =  0.014179182790485
+        E = 1.056850079430725
+        F = 0
+        G = 2.607186318007854e-06
+        H = -1.916840626518055e-04
+    elif (x_camera >= 0) and (y_camera < 0):
+        A = 1.057951457566963
+        B = 0
+        C = 0
+        D = 0.014393897381863
+        E = 1.064904224070167
+        F = 0
+        G = 1.047501093714371e-04
+        H = -3.020148111373127e-04
+    x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
+    y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
+    print('1c) x=%d, y=%d' % (x_camera, y_camera))
+
+    # x_laser = x_camera-10
+    # y_laser = y_camera-2
+    print('1l) x=%d, y=%d' % (x_laser, y_laser))
+    return int(x_laser*10), int(y_laser*10)
 def transCoord2(x_camera, y_camera):
-    x_laser = x_camera
-    y_laser = y_camera
-    print('2) x=%d, y=%d' % (x_laser, y_laser))
-    return x_laser, y_laser
+    x_camera = x_camera / 10
+    y_camera = y_camera / 10
+
+    if (x_camera >= 0) and (y_camera >= 0):
+        A = 1.012697872340425
+        B =  0
+        C =  0
+        D = 0.027370212765957
+        E = 1.132251428571429
+        F =  0
+        G = -2.496453900709220e-04
+        H = 0.001440000000000
+    elif (x_camera < 0) and (y_camera >= 0):
+        A = 1.157030782116832
+        B = -1.301042606982605e-18
+        C = 0
+        D = -0.007416863987928
+        E = 1.110173008399994
+        F = 0
+        G = -3.246654063681308e-04
+        H = 0.001133355275397
+    elif (x_camera < 0) and (y_camera < 0):
+        A = 1.106657697224991
+        B = -0.029131884503512
+        C = 0
+        D = -0.007093959597596
+        E = 1.150709437888713
+        F = 0
+        G = -1.761016035811865e-06
+        H = -2.802279660415735e-04
+    elif (x_camera >= 0) and (y_camera < 0):
+        A = 1.012049453002277
+        B = -0.030369840851800
+        C = 0
+        D = 0.027352687918980
+        E = 1.199608713646112
+        F = 0
+        G = -2.540266018151698e-04
+        H = -8.992061401858611e-04
+    x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
+    y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
+    print('2c) x=%d, y=%d' % (x_camera, y_camera))
+
+    # x_laser = x_camera-15
+    # y_laser = y_camera+1
+    print('2l) x=%d, y=%d' % (x_laser, y_laser))
+    return int(x_laser*10), int(y_laser*10)
 def transCoord3(x_camera, y_camera):
-    x_laser = x_camera
-    y_laser = y_camera
-    print('3) x=%d, y=%d' % (x_laser, y_laser))
-    return x_laser, y_laser
+    x_camera = x_camera / 10
+    y_camera = y_camera / 10
+
+    if (x_camera >= 0) and (y_camera >= 0):
+        A =  1.023089025574213
+        B = -0.014285714285714
+        C = 1
+        D = -0.005844584142118
+        E = 1.249106905836399
+        F =  -6
+        G = -1.782306342060986e-04
+        H = 0.001226187315914
+    elif (x_camera < 0) and (y_camera >= 0):
+        A = 1.150804038893044
+        B = -0.014285714285714
+        C = 1
+        D = -0.019830439695094
+        E = 1.245894326316914
+        F = -6
+        G = -4.820520165290124e-04
+        H = 0.001183352922321
+    elif (x_camera < 0) and (y_camera < 0):
+        A = 1.064499755154853
+        B = 0.014285714285714
+        C = 1
+        D = -0.021545094338899
+        E = 1.087738545932164
+        F = -6
+        G = 8.949953140602492e-05
+        H = -3.824461098663388e-04
+    elif (x_camera >= 0) and (y_camera < 0):
+        A = 1.095847923961981
+        B = 0.014285714285714
+        C = 1
+        D = -0.009262787422080
+        E = 1.116715500607447
+        F = -6
+        G = 3.100841200742235e-04
+        H = -7.446580433073684e-04
+    x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
+    y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
+    print('3c) x=%d, y=%d' % (x_camera, y_camera))
+
+    # x_laser = x_camera-10
+    # y_laser = y_camera-3
+    print('3l) x=%d, y=%d' % (x_laser, y_laser))
+    return int(x_laser*10), int(y_laser*10)
 
 def Log(msg):
     log['msg'] = msg

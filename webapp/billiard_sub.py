@@ -122,18 +122,18 @@ def error_check(past, new, range):
 
 def real_coordinate_x(value, center, max, min, real_length):
      output_val = (value - center) * real_length / (max - min)
-     if output_val >= 141:
-        output_val = 140.9
-     elif output_val <= -141:
-        output_val = -140.9
+     if output_val >= 142:
+        output_val = 141.9
+     elif output_val <= -142:
+        output_val = -141.9
      return (value - center) * real_length / (max - min)
     
 def real_coordinate_y(value, center, max, min, real_length):
      output_val = (value - center) * real_length / (max - min)
-     if output_val >= 70:
-        output_val = 69.9
-     elif output_val <= -70:
-        output_val = -69.9
+     if output_val >= 71:
+        output_val = 70.9
+     elif output_val <= -71:
+        output_val = -70.9
      return (value - center) * real_length / (max - min)
 
 
