@@ -24,9 +24,9 @@ coord = {
     'movex1':0, 'movey1':0,
     'movex2':0, 'movey2':0,
     'movex3':0, 'movey3':0,
-    'offsetx1':0, 'offsety1':310,
-    'offsetx2':0, 'offsety2':250,
-    'offsetx3':0, 'offsety3':200,
+    'offsetx1':10, 'offsety1':205,
+    'offsetx2':78, 'offsety2':145,
+    'offsetx3':10, 'offsety3':105,
     'laser1':19952,
     'laser2':19952,
     'laser3':19952,
@@ -67,7 +67,7 @@ def initialization():
         tx.append(int(float(initdatum[i][2])*10)>>8 & 0xff)
         tx.append(int(float(initdatum[i][2])*10) & 0xff)
         try:
-            # time.sleep(0.1)
+            time.sleep(0.1)
             i2c.write_i2c_block_data(ADDR[i], int(addrs[0].replace("0x",""),16), tx)
         except:
             Log('I2C Error')
@@ -78,7 +78,7 @@ def initialization():
     tx.append(int(coord['offsety1'])>>8 & 0xff)
     tx.append(int(coord['offsety1']) & 0xff)
     try:
-        # time.sleep(0.1)
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[0], 0x05, tx)
     except:
         Log('I2C Error')
@@ -88,7 +88,7 @@ def initialization():
     tx.append(int(coord['offsety2'])>>8 & 0xff)
     tx.append(int(coord['offsety2']) & 0xff)
     try:
-        # time.sleep(0.1)
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[1], 0x05, tx)
     except:
         Log('I2C Error')
@@ -98,7 +98,7 @@ def initialization():
     tx.append(int(coord['offsety3'])>>8 & 0xff)
     tx.append(int(coord['offsety3']) & 0xff)
     try:
-        # time.sleep(0.1)
+        time.sleep(0.1)
         i2c.write_i2c_block_data(ADDR[2], 0x05, tx)
     except:
         Log('I2C Error')
@@ -147,19 +147,18 @@ def control(data):
     error = 0
     tx.clear()
     tx.append(data)
-    print(tx)
     try:
-        time.sleep(0.1)
+        time.sleep(0.3)
         i2c.write_i2c_block_data(ADDR[0], 0x00, tx)
     except:
         error = 1
     try:
-        time.sleep(0.1)
+        time.sleep(0.3)
         i2c.write_i2c_block_data(ADDR[1], 0x00, tx)
     except:
         error = 1
     try:
-        time.sleep(0.1)
+        time.sleep(0.3)
         i2c.write_i2c_block_data(ADDR[2], 0x00, tx)
     except:
         error = 1
@@ -198,7 +197,7 @@ def move():
         tx.append(y>>8 & 0xff)
         tx.append(y & 0xff)
         try:
-            time.sleep(0.2)
+            time.sleep(0.3)
             i2c.write_i2c_block_data(ADDR[0], 0x01, tx)
         except:
             error = 1
@@ -215,7 +214,7 @@ def move():
         tx.append(y>>8 & 0xff)
         tx.append(y & 0xff)
         try:
-            time.sleep(0.1)
+            time.sleep(0.3)
             i2c.write_i2c_block_data(ADDR[1], 0x01, tx)
         except:
             error = 1
@@ -232,7 +231,7 @@ def move():
         tx.append(y>>8 & 0xff)
         tx.append(y & 0xff)
         try:
-            time.sleep(0.1)
+            time.sleep(0.3)
             i2c.write_i2c_block_data(ADDR[2], 0x01, tx)
         except:
             error = 1
@@ -399,145 +398,251 @@ def transCoord1(x_camera, y_camera):
     x_camera = x_camera / 10
     y_camera = y_camera / 10
     
-    if (x_camera >= 0) and (y_camera >= 0):
-        A =1.002836072911788
-        B = -0.015728094503174
-        C = 0
-        D = 0.013644028202881
-        E = 1.399800410782459
-        F = 0
-        G = -2.701844801195503e-04
-        H = 0.001442380217459
+    if (x_camera < 0) and (y_camera >= 35):
+        A = 1.140101
+        B = -0.00691
+        C = 1.728974
+        D = 0.017554
+        E = 1.241035
+        F = -5.63158
+        G = 5.96E-05
+        H = 0.002065   
     elif (x_camera < 0) and (y_camera >= 0):
-        A =  1.113348002768265
-        B = -0.015448588109139
-        C =  0
-        D = 0.014746331162494
-        E = 1.374924341713333
-        F = 3.971368159331492e-16
-        G = -2.809669996865000e-04
-        H = 0.001162873823424
-    elif (x_camera < 0) and (y_camera < 0):
-        A = 1.070528300681584
-        B =  0
-        C =  0
-        D =  0.014179182790485
-        E = 1.056850079430725
-        F = 0
-        G = 2.607186318007854e-06
-        H = -1.916840626518055e-04
-    elif (x_camera >= 0) and (y_camera < 0):
-        A = 1.057951457566963
-        B = 0
-        C = 0
-        D = 0.014393897381863
-        E = 1.064904224070167
-        F = 0
-        G = 1.047501093714371e-04
-        H = -3.020148111373127e-04
+        A = 1.111888
+        B = -0.02975
+        C = 2.507486
+        D = 0.013068
+        E = 1.04584
+        F = -0.18564
+        G = -5.4E-05
+        H = 0.00088
+    elif (x_camera < 0) and (y_camera >= -35):
+        A = 1.075855
+        B = -0.00887
+        C = 2.438181
+        D = 0.012648
+        E = 1.008831
+        F = -0.179
+        G = 0.000179
+        H = 0.000282
+    elif (x_camera < 0) and (y_camera < -35):
+        A = 1.17951
+        B = 0.006607
+        C = 3.225702
+        D = 0.029534
+        E = 1.163647
+        F = 4.000529
+        G = -0.00023
+        H = -0.00075
+    elif (x_camera >= 0) and (y_camera >= 35):
+        A = 0.963115
+        B = -0.01053
+        C = 1.627911
+        D = 0.024687
+        E = 1.2083
+        F = -4.84488
+        G = -0.00052
+        H = 0.001739
+    elif (x_camera >= 0) and (y_camera >= 0):
+        A = 0.974365
+        B = -0.02782
+        C = 2.25975
+        D = 0.034147
+        E = 1.050563
+        F = -0.14865
+        G = -0.00025
+        H = 0.001012
+    elif (x_camera >= 0) and (y_camera >= -35):
+        A = 0.942304
+        B = -0.00777
+        C = 2.198165
+        D = 0.03297
+        E = 1.010729
+        F = -0.1428
+        G = -0.00049
+        H = 0.000264
+    elif (x_camera >= 0) and (y_camera < -35):
+        A = 1.028736
+        B = 0.005894
+        C = 2.877114
+        D = 0.018522
+        E = 1.123215
+        F = 3.018373
+        G = -5.5E-05
+        H = -0.00039
     x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
     y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
     print('1c) x=%d, y=%d' % (x_camera, y_camera))
-
-    # x_laser = x_camera-10
+    # x_laser = x_camera+4
     # y_laser = y_camera-2
-    print('1l) x=%d, y=%d' % (x_laser, y_laser))
+    print('1l) x=%.1f, y=%.1f' % (x_laser, y_laser))
     return int(x_laser*10), int(y_laser*10)
 def transCoord2(x_camera, y_camera):
     x_camera = x_camera / 10
     y_camera = y_camera / 10
 
-    if (x_camera >= 0) and (y_camera >= 0):
-        A = 1.012697872340425
-        B =  0
-        C =  0
-        D = 0.027370212765957
-        E = 1.132251428571429
-        F =  0
-        G = -2.496453900709220e-04
-        H = 0.001440000000000
+    if (x_camera < 0) and (y_camera >= 35):
+        A = 1.131718
+        B = -0.00427
+        C = 2.671414
+        D = 0.001007
+        E = 1.132847
+        F = -0.63061
+        G = -0.00018
+        H = 0.001328
     elif (x_camera < 0) and (y_camera >= 0):
-        A = 1.157030782116832
-        B = -1.301042606982605e-18
-        C = 0
-        D = -0.007416863987928
-        E = 1.110173008399994
-        F = 0
-        G = -3.246654063681308e-04
-        H = 0.001133355275397
-    elif (x_camera < 0) and (y_camera < 0):
-        A = 1.106657697224991
-        B = -0.029131884503512
-        C = 0
-        D = -0.007093959597596
-        E = 1.150709437888713
-        F = 0
-        G = -1.761016035811865e-06
-        H = -2.802279660415735e-04
-    elif (x_camera >= 0) and (y_camera < 0):
-        A = 1.012049453002277
-        B = -0.030369840851800
-        C = 0
-        D = 0.027352687918980
-        E = 1.199608713646112
-        F = 0
-        G = -2.540266018151698e-04
-        H = -8.992061401858611e-04
+        A = 1.096317
+        B = -0.00046
+        C = 2.473596
+        D = 0.00568
+        E = 1.076298
+        F = 0.79523
+        G = -4.8E-05
+        H = 0.000891
+    elif (x_camera < 0) and (y_camera >= -35):
+        A = 1.075727
+        B = 0.004951
+        C = 2.435269
+        D = 0.005715
+        E = 1.050589
+        F = 0.800069
+        G = 8.73E-05
+        H = 0.000289
+    elif (x_camera < 0) and (y_camera < -35):
+        A = 1.20184
+        B = 0.038975
+        C = 3.91137
+        D = 0.023885
+        E = 1.15593
+        F = 2.724086
+        G = -0.00039
+        H = -0.0011
+    elif (x_camera >= 0) and (y_camera >= 35):
+        A = 1.011127
+        B = -0.00744
+        C = 2.63679
+        D = 0.024534
+        E = 1.160128
+        F = -1.23066
+        G = -0.00041
+        H = 0.001573
+    elif (x_camera >= 0) and (y_camera >= 0):
+        A = 0.992194
+        B = 0.001166
+        C = 2.286189
+        D = 0.023543
+        E = 1.082527
+        F = 0.826821
+        G = -0.00041
+        H = 0.001048    
+    elif (x_camera >= 0) and (y_camera >= -35):
+        A = 0.972656
+        B = 0.00583
+        C = 2.250127
+        D = 0.022889
+        E = 1.055964
+        F = 0.831033
+        G = -0.00055
+        H = 0.000177
+    elif (x_camera >= 0) and (y_camera < -35):
+        A = 1.096598
+        B = 0.036646
+        C = 3.60744
+        D = -0.00447
+        E = 1.06596
+        F = 0.579299
+        G = 0.000165
+        H = -0.00028
     x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
     y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
     print('2c) x=%d, y=%d' % (x_camera, y_camera))
 
-    # x_laser = x_camera-15
-    # y_laser = y_camera+1
-    print('2l) x=%d, y=%d' % (x_laser, y_laser))
+    # x_laser = x_camera+8.5
+    # y_laser = y_camera-2
+    print('2l) x=%.1f, y=%.1f' % (x_laser, y_laser))
     return int(x_laser*10), int(y_laser*10)
 def transCoord3(x_camera, y_camera):
     x_camera = x_camera / 10
     y_camera = y_camera / 10
 
-    if (x_camera >= 0) and (y_camera >= 0):
-        A =  1.023089025574213
-        B = -0.014285714285714
-        C = 1
-        D = -0.005844584142118
-        E = 1.249106905836399
-        F =  -6
-        G = -1.782306342060986e-04
-        H = 0.001226187315914
+    if (x_camera < 0) and (y_camera >= 35):
+        A = 1.121155
+        B = -0.00558
+        C = 2.739254
+        D = 0.011212
+        E = 1.286472
+        F = -6.39592
+        G = 0.000203
+        H = 0.002322
     elif (x_camera < 0) and (y_camera >= 0):
-        A = 1.150804038893044
-        B = -0.014285714285714
-        C = 1
-        D = -0.019830439695094
-        E = 1.245894326316914
-        F = -6
-        G = -4.820520165290124e-04
-        H = 0.001183352922321
-    elif (x_camera < 0) and (y_camera < 0):
-        A = 1.064499755154853
-        B = 0.014285714285714
-        C = 1
-        D = -0.021545094338899
-        E = 1.087738545932164
-        F = -6
-        G = 8.949953140602492e-05
-        H = -3.824461098663388e-04
-    elif (x_camera >= 0) and (y_camera < 0):
-        A = 1.095847923961981
-        B = 0.014285714285714
-        C = 1
-        D = -0.009262787422080
-        E = 1.116715500607447
-        F = -6
-        G = 3.100841200742235e-04
-        H = -7.446580433073684e-04
+        A = 1.138942
+        B = 0.01316
+        C = 2.047464
+        D = -0.0054
+        E = 1.051834
+        F = 0.280252
+        G = -0.00025
+        H = 0.001017
+    elif (x_camera < 0) and (y_camera >= -35):
+        A = 1.086927
+        B = 0.018809
+        C = 1.952707
+        D = -0.00501
+        E = 1.019028
+        F = 0.287105
+        G = 8.38E-05
+        H = 1.08E-05
+    elif (x_camera < 0) and (y_camera < -35):
+        A = 1.136847
+        B = 0.007144
+        C = 1.626551
+        D = 0.00269
+        E = 1.080867
+        F = 1.938441
+        G = -0.00013
+        H = -0.00042
+    elif (x_camera >= 0) and (y_camera >= 35):
+        A = 0.964499
+        B = -0.0085
+        C = 2.612055
+        D = -0.00263
+        E = 1.200844
+        F = -4.37696
+        G = -0.00067
+        H = 0.001508
+    elif (x_camera >= 0) and (y_camera >= 0):
+        A = 0.996013
+        B = 0.015143
+        C = 1.789795
+        D = 0.010207
+        E = 1.050505
+        F = 0.308658
+        G = -0.00032
+        H = 0.000985
+    elif (x_camera >= 0) and (y_camera >= -35):
+        A = 0.985014
+        B = 0.01961
+        C = 1.769103
+        D = 0.009839
+        E = 1.01701
+        F = 0.31468
+        G = -0.0004
+        H = 9.28E-05
+    elif (x_camera >= 0) and (y_camera < -35):
+        A = 1.094286
+        B = 0.00755
+        C = 1.528613
+        D = -0.00688
+        E = 1.151273
+        F = 3.597192
+        G = 4.26E-05
+        H = -0.00107
     x_laser = ((A*x_camera) + (B*y_camera) + C) / ((G*x_camera) + (H*y_camera) + 1)
     y_laser = ((D*x_camera) + (E*y_camera) + F) / ((G*x_camera) + (H*y_camera) + 1)
     print('3c) x=%d, y=%d' % (x_camera, y_camera))
-
-    # x_laser = x_camera-10
-    # y_laser = y_camera-3
-    print('3l) x=%d, y=%d' % (x_laser, y_laser))
+    # x_laser = x_camera+3
+    # y_laser = y_camera-2.5
+    print('3l) x=%.1f, y=%.1f' % (x_laser, y_laser))
     return int(x_laser*10), int(y_laser*10)
 
 def Log(msg):
