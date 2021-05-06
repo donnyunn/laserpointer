@@ -393,6 +393,28 @@ def recog_balls():
     # grab the current frame
     ret, frame = vs.read()
 
+
+    # hheight, wwidth, cchannel = frame.shape
+    # mmatrix = cv2.getRotationMatrix2D((wwidth, hheight), 0.05, 1)
+    # frame = cv2.warpAffine(frame, mmatrix, (wwidth, hheight))
+
+    # kk_1, kk_2, kk_3 = -0.004, -0.001, -0.002
+    # rows, cols = frame.shape[:2]
+    # mapy, mapx = np.indices((rows, cols), dtype = np.float32)
+
+    # mapx = 2*mapx/(cols-1)-1
+    # mapy = 2*mapy/(rows-1)-1
+    # rrr, theta = cv2.cartToPolar(mapx, mapy)
+    # rrru = rrr*(1+kk_1*(rrr**2) + kk_2*(rrr**4) + kk_3*(rrr**6))
+    # mapx, mapy = cv2.polarToCart(rrru, theta)
+    # mapx = ((mapx + 1)*cols-1)/2
+    # mapy = ((mapy + 1)*rows-1)/2
+    # distorted = cv2.remap(frame, mapx, mapy, cv2.INTER_LINEAR)
+    # frame = distorted
+    
+
+
+
     frame_ROI = frame[bl[1]:tr[1], bl[0]:tr[0]]
 
     # resize the frame, blur it, and convert it to the HSV
