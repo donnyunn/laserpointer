@@ -163,6 +163,7 @@ def control(data):
 
 @app.route('/poweroff/<int:data>')
 def poweroff(data):
+    control(0)
     if data == 0:
         Log("Turning device power off..")
         os.system('shutdown -h now')

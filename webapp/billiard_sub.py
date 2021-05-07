@@ -532,10 +532,10 @@ def recog_balls():
          real_coordinate_x(x_table, (tr[0] - bl[0]) / 2, tr[0], bl[0], table_real_length - 2*table_real_bumper),
          real_coordinate_y(y_table, (tr[1] - bl[1]) / 2, tr[1], bl[1], table_real_height - 2*table_real_bumper)])
 
-    frame = cv2.line(frame, (tl[0], tl[1]), (tr[0], tr[1]), (0, 255, 0), 5)
-    frame = cv2.line(frame, (tr[0], tr[1]), (br[0], br[1]), (0, 255, 0), 5)
-    frame = cv2.line(frame, (br[0], br[1]), (bl[0], bl[1]), (0, 255, 0), 5)
-    frame = cv2.line(frame, (bl[0], bl[1]), (tl[0], tl[1]), (0, 255, 0), 5)
+    frame = cv2.line(frame, (tl[0], tl[1]), (tr[0], tr[1]), (0, 255, 0), 2)
+    frame = cv2.line(frame, (tr[0], tr[1]), (br[0], br[1]), (0, 255, 0), 2)
+    frame = cv2.line(frame, (br[0], br[1]), (bl[0], bl[1]), (0, 255, 0), 2)
+    frame = cv2.line(frame, (bl[0], bl[1]), (tl[0], tl[1]), (0, 255, 0), 2)
 
     bb = np.hstack([b, b2, b3, b4])
     bb_r = np.hstack([b_r, b2_r, b3_r, b4_r])
